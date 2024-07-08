@@ -1,0 +1,59 @@
+/* Login.css */
+
+.form-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(to right, rgb(3,17,178), rgb(59,0,114));
+}
+
+.form-wrapper {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.text-center h1 {
+  font-size: 2rem;
+  color: #007bff;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+
+.mb-5 {
+  margin-bottom: 3rem !important;
+}
+
+.bg-transparent {
+  background-color: transparent !important;
+}
+
+.text-white {
+  color: white !important;
+}
+
+.input-group-text {
+  background-color: transparent;
+  border: none;
+}
+
+.input-group-text .fa {
+  color: white;
+}
+
+.form-control {
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid white; /* Optional: Add a bottom border */
+  color: white;
+}
+
+.custom-placeholder::placeholder {
+  color: grey !important;
+}
