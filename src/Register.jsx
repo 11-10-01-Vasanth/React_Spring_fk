@@ -9,7 +9,8 @@ import { PiUsersThree } from "react-icons/pi";
 import { LiaUserSecretSolid } from "react-icons/lia";
 import { Spinner } from "react-bootstrap";
 import { TfiUser } from "react-icons/tfi";
-import Swal from "sweetalert2";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import {
   faUser,
   faEnvelope,
@@ -46,18 +47,26 @@ function Register() {
   }
 
   const showSuccessAlert = () => {
-    Swal.fire({
-      icon: "success",
-      title: "Registered Successful!",
-      text: "You have successfully Registered.",
+    toast.success("You have successfully Registered!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
     });
   };
 
   const showErrorAlert = (message) => {
-    Swal.fire({
-      icon: "error",
-      title: "Registration Failed",
-      text: message || "Something went wrong. Please try again later.",
+    toast.error(message || "Something went wrong. Please try again later.", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
     });
   };
 
@@ -81,30 +90,29 @@ function Register() {
           onSubmit={(values, { setSubmitting }) => {
             setIsLoading(true);
             axios
-  .post("http://localhost:2001/user/register", values)
-  .then((response) => {
-    console.log(response.data);
-    setIsLoading(false);
-    setIsSubmitted(true); // Set form as submitted
-    if (typeof response?.data === 'string') {
-      showErrorAlert(response.data); // Display error message from API response
-    }
-    else{
-      showSuccessAlert();
-      navigate("/login");
-    }
-    
-  })
-  .catch((error) => {
-    console.log(error);
-    setIsLoading(false);
-    // Check if error response data is a string and show appropriate error alert
-      showErrorAlert(error.response?.data?.message || 'An error occurred'); // Display generic error message
-  })
-  .finally(() => {
-    setSubmitting(false);
-  });
-
+              .post("http://localhost:2001/user/register", values)
+              .then((response) => {
+                console.log(response.data);
+                setIsLoading(false);
+                setIsSubmitted(true); // Set form as submitted
+                if (typeof response?.data === "string") {
+                  showErrorAlert(response.data); // Display error message from API response
+                } else {
+                  showSuccessAlert();
+                  navigate("/login");
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+                setIsLoading(false);
+                // Check if error response data is a string and show appropriate error alert
+                showErrorAlert(
+                  error.response?.data?.message || "An error occurred"
+                ); // Display generic error message
+              })
+              .finally(() => {
+                setSubmitting(false);
+              });
           }}
         >
           {({ handleSubmit, handleChange, values, errors, touched }) => (
@@ -236,6 +244,7 @@ function Register() {
             </Form>
           )}
         </Formik>
+        <ToastContainer />
       </div>
     </div>
   );
