@@ -5,9 +5,10 @@ import InputGroup from "react-bootstrap/InputGroup";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CgProfile } from "react-icons/cg";
-import { FaUsers } from "react-icons/fa";
+import { PiUsersThree } from "react-icons/pi";
+import { LiaUserSecretSolid } from "react-icons/lia";
 import { Spinner } from "react-bootstrap";
+import { TfiUser } from "react-icons/tfi";
 import Swal from "sweetalert2";
 import {
   faUser,
@@ -52,12 +53,20 @@ function Register() {
     });
   };
 
+  const showErrorAlert = (message) => {
+    Swal.fire({
+      icon: "error",
+      title: "Registration Failed",
+      text: message || "Something went wrong. Please try again later.",
+    });
+  };
+
   return (
     <div className="form-container">
       <div className="form-wrapper">
         <div className="text-center mb-5">
           <h1 className="text-primary">
-            <FaUsers />
+            <PiUsersThree />
           </h1>
         </div>
         <Formik
@@ -83,6 +92,7 @@ function Register() {
               .catch((error) => {
                 console.log(error);
                 setIsLoading(false);
+                showErrorAlert(error.response?.data?.message); // Display error message from API response
               })
               .finally(() => {
                 setSubmitting(false);
@@ -94,7 +104,7 @@ function Register() {
               <Form.Group controlId="validationFormik01" className="mb-4">
                 <InputGroup hasValidation>
                   <InputGroup.Text className="bg-transparent text-light">
-                    <CgProfile />
+                    <LiaUserSecretSolid />
                   </InputGroup.Text>
                   <Form.Control
                     type="text"
@@ -114,7 +124,7 @@ function Register() {
               <Form.Group controlId="validationFormik02" className="mb-4">
                 <InputGroup hasValidation>
                   <InputGroup.Text className="bg-transparent text-light">
-                    <CgProfile />
+                    <LiaUserSecretSolid />
                   </InputGroup.Text>
                   <Form.Control
                     type="text"
