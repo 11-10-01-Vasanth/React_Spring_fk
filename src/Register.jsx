@@ -81,22 +81,30 @@ function Register() {
           onSubmit={(values, { setSubmitting }) => {
             setIsLoading(true);
             axios
-              .post("http://localhost:2001/user/register", values)
-              .then((response) => {
-                console.log(response.data);
-                setIsLoading(false);
-                setIsSubmitted(true); // Set form as submitted
-                showSuccessAlert();
-                navigate("/login");
-              })
-              .catch((error) => {
-                console.log(error);
-                setIsLoading(false);
-                showErrorAlert(error.response?.data?.message); // Display error message from API response
-              })
-              .finally(() => {
-                setSubmitting(false);
-              });
+  .post("http://localhost:2001/user/register", values)
+  .then((response) => {
+    console.log(response.data);
+    setIsLoading(false);
+    setIsSubmitted(true); // Set form as submitted
+    if (typeof response?.data === 'string') {
+      showErrorAlert(response.data); // Display error message from API response
+    }
+    else{
+      showSuccessAlert();
+      navigate("/login");
+    }
+    
+  })
+  .catch((error) => {
+    console.log(error);
+    setIsLoading(false);
+    // Check if error response data is a string and show appropriate error alert
+      showErrorAlert(error.response?.data?.message || 'An error occurred'); // Display generic error message
+  })
+  .finally(() => {
+    setSubmitting(false);
+  });
+
           }}
         >
           {({ handleSubmit, handleChange, values, errors, touched }) => (

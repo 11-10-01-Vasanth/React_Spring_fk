@@ -70,7 +70,10 @@ function Login() {
                 if (response.data) {
                   showSuccessAlert();
                 }
-                showErrorAlert(response?.data?.message);
+                else{
+                  showErrorAlert(response?.data?.message);
+                }
+                
               })
               .catch((error) => {
                 console.log(error);
