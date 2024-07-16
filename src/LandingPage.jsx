@@ -8,6 +8,5 @@ export default function LandingPage() {
       <Navbar></Navbar>
       <FeaturedGamesCarousel></FeaturedGamesCarousel>
     </div>
-   
   )
 }

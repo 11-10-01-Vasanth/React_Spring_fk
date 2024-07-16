@@ -18,10 +18,14 @@ import IconButton from "@mui/material/IconButton";
 import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
+import KeyTwoToneIcon from "@mui/icons-material/KeyTwoTone";
+import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import FormControl from "@mui/material/FormControl";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import FormHelperText from "@mui/material/FormHelperText";
+import Fingerprint from "@mui/icons-material/Fingerprint";
+import Tooltip from "@mui/material/Tooltip";
 
 function Login() {
   const schema = yup.object().shape({
@@ -50,7 +54,7 @@ function Login() {
   }
 
   const showSuccessAlert = () => {
-    toast.success("You have successfully Login!", {
+    toast.success("You have successfully logged in!", {
       position: "top-center",
       autoClose: 5000,
       hideProgressBar: false,
@@ -59,6 +63,10 @@ function Login() {
       draggable: true,
       progress: undefined,
     });
+
+    setTimeout(() => {
+      navigate("/home");
+    }, 5000); // Navigate after 5 seconds
   };
 
   const showErrorAlert = (message) => {
@@ -123,13 +131,22 @@ function Login() {
                     <Input
                       id="input-with-icon-adornment"
                       startAdornment={
-                        <InputAdornment position="start">
-                          <h4>
-                            <FontAwesomeIcon
+                        <InputAdornment
+                          position="start"
+                          style={{
+                            padding: "13px",
+                            marginRight: "8px",
+                            marginTop: "8px",
+                          }}
+                        >
+                          <h5>
+                            <PersonOutlinedIcon
+                              style={{
+                                marginBottom: "7px",
+                              }}
                               className="text-light"
-                              icon={faUser}
-                            />
-                          </h4>
+                            ></PersonOutlinedIcon>
+                          </h5>
                         </InputAdornment>
                       }
                       type="text"
@@ -138,15 +155,15 @@ function Login() {
                       name="username"
                       value={values.username}
                       onChange={handleChange}
-                      isInvalid={!!errors.username && touched.username}
+                      error={!!errors.username && touched.username}
                     />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.username}
-                    </Form.Control.Feedback>
-                  </FormControl>
-                  <FormHelperText error={!!errors.username && touched.username} className="text-danger">
+                    <FormHelperText
+                      error={!!errors.username && touched.username}
+                      className="text-danger"
+                    >
                       {errors.username}
                     </FormHelperText>
+                  </FormControl>
                 </InputGroup>
               </Form.Group>
 
@@ -156,13 +173,22 @@ function Login() {
                     <Input
                       id="standard-adornment-password"
                       startAdornment={
-                        <InputAdornment position="start">
-                          <h4>
-                            <FontAwesomeIcon
-                              className="text-light"
-                              icon={faMobileAlt}
-                            />
-                          </h4>
+                        <InputAdornment
+                          position="start"
+                          style={{
+                            padding: "13px",
+                            marginRight: "8px",
+                            marginTop: "8px",
+                          }}
+                        >
+                          <h5>
+                            <KeyTwoToneIcon
+                              style={{
+                                marginBottom: "7px",
+                              }}
+                              className="text-white"
+                            ></KeyTwoToneIcon>
+                          </h5>
                         </InputAdornment>
                       }
                       type={showPassword ? "text" : "password"}
@@ -179,13 +205,16 @@ function Login() {
                           </IconButton>
                         </InputAdornment>
                       }
-                      placeholder="Enter your Mobile number"
+                      placeholder="Password"
                       name="mobile"
                       value={values.mobile}
                       onChange={handleChange}
                       error={!!errors.mobile && touched.mobile}
                     />
-                    <FormHelperText error={!!errors.mobile && touched.mobile} className="text-danger">
+                    <FormHelperText
+                      error={!!errors.mobile && touched.mobile}
+                      className="text-danger"
+                    >
                       {errors.mobile}
                     </FormHelperText>
                   </FormControl>
@@ -203,8 +232,10 @@ function Login() {
                       <Spinner animation="border" size="sm" />
                     ) : (
                       <>
-                        <FontAwesomeIcon icon={faUserPlus} className="me-2" />
-                        Register
+                        <p>
+                          <FontAwesomeIcon icon={faUserPlus} className="me-2" />
+                          Register <span style={{ color: "grey" }}>(Don't Have An Account)</span>
+                        </p>
                       </>
                     )}
                   </Button>
@@ -212,13 +243,17 @@ function Login() {
               </div>
 
               <div className="text-center">
-                <Button
-                  variant="outline-light text-primary"
-                  type="submit"
-                  disabled={isLoading}
-                >
-                  Login
-                </Button>
+                <Tooltip title="Login">
+                  <IconButton
+                    aria-label="fingerprint"
+                    style={{ backgroundColor: "rgb(17,13,162)" }}
+                    type="submit"
+                    disabled={isLoading}
+                    className="hoverSumbit"
+                  >
+                    <Fingerprint style={{ fontSize: "40px" }} />
+                  </IconButton>
+                </Tooltip>
               </div>
             </Form>
           )}

@@ -57,3 +57,11 @@
 .custom-placeholder::placeholder {
   color: grey !important;
 }
+
+/* .hoverSumbit{
+  color: rgba(0, 0, 255, 0.717);
+} */
+
+.hoverSumbit:hover{
+  color: white;
+}
