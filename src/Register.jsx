@@ -10,7 +10,7 @@ import { LiaUserSecretSolid } from "react-icons/lia";
 import { Spinner } from "react-bootstrap";
 import { TfiUser } from "react-icons/tfi";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import {
   faUser,
   faEnvelope,
@@ -48,7 +48,7 @@ function Register() {
 
   const showSuccessAlert = () => {
     toast.success("You have successfully Registered!", {
-      position: "top-right",
+      position: "top-center",
       autoClose: 5000,
       hideProgressBar: false,
       closeOnClick: true,
@@ -60,7 +60,7 @@ function Register() {
 
   const showErrorAlert = (message) => {
     toast.error(message || "Something went wrong. Please try again later.", {
-      position: "top-right",
+      position: "top-center",
       autoClose: 5000,
       hideProgressBar: false,
       closeOnClick: true,
@@ -99,7 +99,9 @@ function Register() {
                   showErrorAlert(response.data); // Display error message from API response
                 } else {
                   showSuccessAlert();
-                  navigate("/login");
+                  setTimeout(() => {
+                    navigate("/login");
+                  }, 5000); // Wait for 5 seconds before navigating
                 }
               })
               .catch((error) => {
@@ -237,7 +239,11 @@ function Register() {
               </div>
 
               <div className="text-center">
-                <Button variant="outline-light text-primary" type="submit">
+                <Button
+                  variant="outline-light text-primary"
+                  disabled={isLoading}
+                  type="submit"
+                >
                   Register
                 </Button>
               </div>
