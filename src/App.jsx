@@ -2,6 +2,7 @@ import Login from "./Login";
 import Register from "./Register";
 import LandingPage from "../LandingPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Admin from "./Admin/Admin"
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -12,6 +13,7 @@ export default function App() {
       <Route path="/home" element={<LandingPage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/" element={<Login />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </BrowserRouter>
   );
