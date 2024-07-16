@@ -3,6 +3,7 @@ import Register from "./Register";
 import LandingPage from "./LandingPage";
 import Admin from "./Admin/Admin"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Admin from "./Admin/Admin"
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
