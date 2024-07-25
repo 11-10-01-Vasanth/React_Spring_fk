@@ -15,18 +15,19 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import CategoryIcon from "@mui/icons-material/Category";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 
 const validationSchema = Yup.object({
-  gameTitle: Yup.string().required("Game Title Required"),
-  gameDescription: Yup.string().required("Game Description Required"),
-  gamePrice: Yup.number()
+  gametitle: Yup.string().required("Game Title Required"),
+  gamedescription: Yup.string().required("Game Description Required"),
+  gameprice: Yup.number()
     .required("Game Price Required")
     .positive("Game Price Required as positive value"),
-  gameDiscount: Yup.number()
+  gamediscount: Yup.number()
     .required("Game Discount Required")
     .min(0)
     .max(1000, "Must be between 0 and 1000"),
-  gameCategory: Yup.string().required("Game Category Required"),
+  gamecategory: Yup.string().required("Game Category Required"),
 });
 
 const VisuallyHiddenInput = styled("input")`
@@ -47,29 +48,53 @@ export default function AddGames() {
 
   const formik = useFormik({
     initialValues: {
-      gameTitle: "",
-      gameDescription: "",
-      gamePrice: "",
-      gameDiscount: "",
-      gameCategory: "",
+      gametitle: "",
+      gamedescription: "",
+      gameprice: "",
+      gamediscount: "",
+      gamecategory: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      const data = { ...values, selectedFile };
-      console.log(data);
+      const formData = new FormData();
+      formData.append("gametitle", values.gametitle);
+      formData.append("gamedescription", values.gamedescription);
+      formData.append("gameprice", values.gameprice);
+      formData.append("gamediscount", values.gamediscount);
+      formData.append("gamecategory", values.gamecategory);
+      formData.append("gameimage", selectedFile);
 
-      return new Promise((resolve, reject) => {
-        axios
-          .post("http://localhost:2001/admin/addgames", data)
-          .then((response) => {
-            console.log(response.data);
-            resolve(response);
-          })
-          .catch((err) => {
-            reject(err);
+      console.log(formData);
+
+      axios
+        .post("http://localhost:2001/admin/addgames", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          toast.success("Successfully Added", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
           });
-      });
-      // Handle form submission logic here
+          console.log(response.data);
+        })
+        .catch((err) => {
+          toast.error(err, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        });
     },
   });
 
@@ -105,16 +130,16 @@ export default function AddGames() {
       <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, width: "100%" }}>
           <TextField
-            id="gameTitle"
-            name="gameTitle"
+            id="gametitle"
+            name="gametitle"
             label="Game Title"
             variant="outlined"
             size="medium"
-            value={formik.values.gameTitle}
+            value={formik.values.gametitle}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.gameTitle && Boolean(formik.errors.gameTitle)}
-            helperText={formik.touched.gameTitle && formik.errors.gameTitle}
+            error={formik.touched.gametitle && Boolean(formik.errors.gametitle)}
+            helperText={formik.touched.gametitle && formik.errors.gametitle}
             fullWidth
             InputProps={{
               startAdornment: (
@@ -125,20 +150,20 @@ export default function AddGames() {
             }}
           />
           <TextField
-            id="gameDescription"
-            name="gameDescription"
+            id="gamedescription"
+            name="gamedescription"
             label="Game Description"
             variant="outlined"
             size="medium"
-            value={formik.values.gameDescription}
+            value={formik.values.gamedescription}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={
-              formik.touched.gameDescription &&
-              Boolean(formik.errors.gameDescription)
+              formik.touched.gamedescription &&
+              Boolean(formik.errors.gamedescription)
             }
             helperText={
-              formik.touched.gameDescription && formik.errors.gameDescription
+              formik.touched.gamedescription && formik.errors.gamedescription
             }
             fullWidth
             InputProps={{
@@ -150,16 +175,16 @@ export default function AddGames() {
             }}
           />
           <TextField
-            id="gamePrice"
-            name="gamePrice"
+            id="gameprice"
+            name="gameprice"
             label="Game Price"
             variant="outlined"
             size="medium"
-            value={formik.values.gamePrice}
+            value={formik.values.gameprice}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.gamePrice && Boolean(formik.errors.gamePrice)}
-            helperText={formik.touched.gamePrice && formik.errors.gamePrice}
+            error={formik.touched.gameprice && Boolean(formik.errors.gameprice)}
+            helperText={formik.touched.gameprice && formik.errors.gameprice}
             fullWidth
             InputProps={{
               startAdornment: (
@@ -170,19 +195,19 @@ export default function AddGames() {
             }}
           />
           <TextField
-            id="gameDiscount"
-            name="gameDiscount"
+            id="gamediscount"
+            name="gamediscount"
             label="Game Discount"
             variant="outlined"
             size="medium"
-            value={formik.values.gameDiscount}
+            value={formik.values.gamediscount}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={
-              formik.touched.gameDiscount && Boolean(formik.errors.gameDiscount)
+              formik.touched.gamediscount && Boolean(formik.errors.gamediscount)
             }
             helperText={
-              formik.touched.gameDiscount && formik.errors.gameDiscount
+              formik.touched.gamediscount && formik.errors.gamediscount
             }
             fullWidth
             InputProps={{
@@ -194,19 +219,19 @@ export default function AddGames() {
             }}
           />
           <TextField
-            id="gameCategory"
-            name="gameCategory"
+            id="gamecategory"
+            name="gamecategory"
             label="Game Category"
             variant="outlined"
             size="medium"
-            value={formik.values.gameCategory}
+            value={formik.values.gamecategory}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={
-              formik.touched.gameCategory && Boolean(formik.errors.gameCategory)
+              formik.touched.gamecategory && Boolean(formik.errors.gamecategory)
             }
             helperText={
-              formik.touched.gameCategory && formik.errors.gameCategory
+              formik.touched.gamecategory && formik.errors.gamecategory
             }
             fullWidth
             InputProps={{
@@ -263,6 +288,7 @@ export default function AddGames() {
           </Button>
         </Box>
       </form>
+      <ToastContainer></ToastContainer>
     </Box>
   );
 }
