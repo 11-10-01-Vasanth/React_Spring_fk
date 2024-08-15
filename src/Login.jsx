@@ -234,7 +234,10 @@ function Login() {
                       <>
                         <p>
                           <FontAwesomeIcon icon={faUserPlus} className="me-2" />
-                          Register <span style={{ color: "grey" }}>(Don't Have An Account)</span>
+                          Register{" "}
+                          <span>
+                            (Don`t Have An Account)
+                          </span>
                         </p>
                       </>
                     )}
@@ -243,15 +246,23 @@ function Login() {
               </div>
 
               <div className="text-center">
-                <Tooltip title="Login">
+                <Tooltip title="Login" className="">
                   <IconButton
                     aria-label="fingerprint"
-                    style={{ backgroundColor: "rgb(17,13,162)" }}
                     type="submit"
                     disabled={isLoading}
-                    className="hoverSumbit"
+                    className="hoverSumbit text-primary"
+                    sx={{
+                      border: "1px solid blue",
+                      borderRadius: "50%",
+                      padding: "5px",
+                      "&:hover": {
+                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                        borderColor: "white",
+                      },
+                    }}
                   >
-                    <Fingerprint style={{ fontSize: "40px" }} />
+                    <Fingerprint style={{ fontSize: "30px" }} />
                   </IconButton>
                 </Tooltip>
               </div>

@@ -21,8 +21,54 @@ import AddIcon from "@mui/icons-material/Add";
 import CreateIcon from "@mui/icons-material/Create";
 import AddGames from "./AddGames";
 import UpdateGames from "./UpdateGames";
+import Tooltip from "@mui/material/Tooltip";
+import Fade from "@mui/material/Fade";
+import { alpha } from "@mui/material/styles";
+import SearchIcon from "@mui/icons-material/Search";
+import InputBase from "@mui/material/InputBase";
 
 const drawerWidth = 240;
+
+const Search = styled("div")(({ theme }) => ({
+  position: "relative",
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  "&:hover": {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  marginLeft: 0,
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
+    marginLeft: theme.spacing(1),
+    width: "auto",
+  },
+}));
+
+const SearchIconWrapper = styled("div")(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: "inherit",
+  width: "100%",
+  "& .MuiInputBase-input": {
+    padding: theme.spacing(1, 1, 1, 0),
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create("width"),
+    [theme.breakpoints.up("sm")]: {
+      width: "12ch",
+      "&:focus": {
+        width: "20ch",
+      },
+    },
+  },
+}));
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -50,7 +96,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   alignItems: "center",
   justifyContent: "flex-end",
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
@@ -92,6 +137,7 @@ const Drawer = styled(MuiDrawer, {
 export default function MiniDrawer() {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
+  const [toSearch, setToSearch] = useState(''); // Corrected state name
   const [selectedComponent, setSelectedComponent] = useState("add");
 
   const handleDrawerOpen = () => {
@@ -104,6 +150,10 @@ export default function MiniDrawer() {
 
   const handleListItemClick = (component) => {
     setSelectedComponent(component);
+  };
+
+  const handleSearch = (event) => {
+    setToSearch(event.target.value); // Corrected to update the state properly
   };
 
   return (
@@ -123,9 +173,19 @@ export default function MiniDrawer() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Admin
-          </Typography>
+          <div className="d-flex justify-content-between w-100">
+            <Typography variant="h6">Admin</Typography>
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Search…"
+                inputProps={{ "aria-label": "search" }}
+                onChange={handleSearch} // Simplified to directly use handleSearch
+              />
+            </Search>
+          </div>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -145,28 +205,35 @@ export default function MiniDrawer() {
             { text: "Edit", icon: <CreateIcon />, component: "edit" },
           ].map((item) => (
             <ListItem key={item.text} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-                onClick={() => handleListItemClick(item.component)}
+              <Tooltip
+                placement="right"
+                TransitionComponent={Fade}
+                TransitionProps={{ timeout: 600 }}
+                title={item.text}
               >
-                <ListItemIcon
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
                   }}
+                  onClick={() => handleListItemClick(item.component)}
                 >
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.text}
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
-              </ListItemButton>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.text}
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </Tooltip>
             </ListItem>
           ))}
         </List>
@@ -176,7 +243,7 @@ export default function MiniDrawer() {
         <DrawerHeader />
         <Typography paragraph>
           {selectedComponent === "add" && <AddGames />}
-          {selectedComponent === "edit" && <UpdateGames />}
+          {selectedComponent === "edit" && <UpdateGames search={toSearch} />} {/* Pass toSearch as prop */}
         </Typography>
       </Box>
     </Box>

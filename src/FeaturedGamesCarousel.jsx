@@ -1,26 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Carousel from "react-bootstrap/Carousel";
 import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap CSS is imported
 
-const featuredGames = [
-  {
-    img: "https://cdn2.spatial.io/assets/v1/thumbnails/660d85089b55c7f7d734e83b/customThumbnail/r/6a7d5a32207bfee1058663c9c43692af714de01dce1fe08642cff9250c851df9/1720762121",
-    title: "APEX",
-    description:
-      "BlueStacks app player is the best platform to play this Android game on your PC or Mac",
-  },
-];
-
 export default function FeaturedGamesCarousel() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [page, setPage] = useState(0);
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:2001/admin/getAll/${page}/1`)
+      .then((response) => {
+        setData(response.data.content);
+        console.log(response.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err);
+        setLoading(false);
+      });
+  }, [page]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
   return (
     <Carousel data-bs-theme="dark">
-      {featuredGames.map((fg, index) => (
+      {data.map((fg, index) => (
         <Carousel.Item key={index}>
           <img
             className="d-block w-100 img-fluid"
             style={{ height: "100vh" }}
-            src={fg.img}
-            alt={fg.title}
+            src={fg.gameimage}
+            alt={fg.gametitle}
           />
           <Carousel.Caption
             style={{
@@ -31,8 +44,8 @@ export default function FeaturedGamesCarousel() {
               color: "#fff",
             }}
           >
-            <h5>{fg.title}</h5>
-            <p>{fg.description}</p>
+            <h5>{fg.gametitle}</h5>
+            <p>{fg.gamedescription}</p>
           </Carousel.Caption>
         </Carousel.Item>
       ))}
