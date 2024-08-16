@@ -23,7 +23,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import Skeleton from "@mui/material/Skeleton";
 
 // eslint-disable-next-line react/prop-types
-export default function UpdateGames({search}) {
+export default function UpdateGames({ search }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -96,25 +96,25 @@ export default function UpdateGames({search}) {
             <TableHead>
               <TableRow>
                 <TableCell align="center">
-                  <Skeleton variant="text" width={100} />
+                  <TitleIcon />
                 </TableCell>
                 <TableCell align="center">
-                  <Skeleton variant="text" width={150} />
+                  <DescriptionIcon />
                 </TableCell>
                 <TableCell align="center">
-                  <Skeleton variant="text" width={100} />
+                  <CategoryIcon />
                 </TableCell>
                 <TableCell align="center">
-                  <Skeleton variant="text" width={50} />
+                  <DiscountIcon />
                 </TableCell>
                 <TableCell align="center">
-                  <Skeleton variant="text" width={50} />
+                  <PriceIcon />
                 </TableCell>
                 <TableCell align="center">
-                  <Skeleton variant="rectangular" width={200} height={100} />
+                  <ImageIcon />
                 </TableCell>
                 <TableCell align="center">
-                  <Skeleton variant="text" width={50} />
+                  <DeleteSweepIcon />
                 </TableCell>
               </TableRow>
             </TableHead>
