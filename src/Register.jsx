@@ -111,7 +111,7 @@ function Register() {
                 } else {
                   showSuccessAlert();
                   setTimeout(() => {
-                    navigate("/login");
+                    navigate("/");
                   }, 5000);
                 }
               })

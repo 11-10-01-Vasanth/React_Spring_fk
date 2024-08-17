@@ -10,9 +10,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-      <Route path="/home" element={<LandingPage />} />
+      <Route path="/" element={<LandingPage />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>
     </BrowserRouter>

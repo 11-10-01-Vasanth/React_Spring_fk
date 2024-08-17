@@ -3,8 +3,6 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faUser,
-  faMobileAlt,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { Button, Form, InputGroup, Spinner } from "react-bootstrap";
@@ -13,10 +11,8 @@ import "./Login.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import * as React from "react";
 import IconButton from "@mui/material/IconButton";
 import Input from "@mui/material/Input";
-import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import KeyTwoToneIcon from "@mui/icons-material/KeyTwoTone";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
@@ -26,6 +22,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import FormHelperText from "@mui/material/FormHelperText";
 import Fingerprint from "@mui/icons-material/Fingerprint";
 import Tooltip from "@mui/material/Tooltip";
+import LandingPage from "./LandingPage";
 
 function Login() {
   const schema = yup.object().shape({
@@ -33,7 +30,12 @@ function Login() {
     mobile: yup.string().required("Mobile is required"),
   });
 
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [name, setName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showLandingPage, setShowLandingPage] = useState(false);
+  const navigate = useNavigate();
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -41,17 +43,12 @@ function Login() {
     event.preventDefault();
   };
 
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const isRegistered = false;
-  const navigate = useNavigate();
-
-  function navigateRegister() {
+  const navigateRegister = () => {
     setIsLoading(true);
     setTimeout(() => {
       navigate("/register");
     }, 1000);
-  }
+  };
 
   const showSuccessAlert = () => {
     toast.success("You have successfully logged in!", {
@@ -65,8 +62,8 @@ function Login() {
     });
 
     setTimeout(() => {
-      navigate("/home");
-    }, 5000); // Navigate after 5 seconds
+      setShowLandingPage(true);
+    }, 2000); // Navigate after 5 seconds
   };
 
   const showErrorAlert = (message) => {
@@ -81,6 +78,11 @@ function Login() {
     });
   };
 
+  if (showLandingPage) {
+    // return <LandingPage username={name} />;
+    navigate('/', { state: { username: name } });
+  }
+
   return (
     <div className="form-container">
       <div className="form-wrapper">
@@ -92,13 +94,12 @@ function Login() {
         <Formik
           validationSchema={schema}
           onSubmit={(values, { setSubmitting }) => {
-            const { username, mobile } = values;
-            console.log({ username, mobile });
             setIsLoading(true);
             axios
               .post("http://localhost:2001/user/login", values)
               .then((response) => {
-                console.log(response.data);
+                console.log(values.username);
+                setName(values.username);
                 setIsLoading(false);
                 setIsSubmitted(true);
                 if (response.data) {
@@ -108,7 +109,6 @@ function Login() {
                 }
               })
               .catch((error) => {
-                console.log(error);
                 setIsLoading(false);
                 showErrorAlert(
                   error.response?.data?.message || "An error occurred"
@@ -139,14 +139,10 @@ function Login() {
                             marginTop: "8px",
                           }}
                         >
-                          <h5>
-                            <PersonOutlinedIcon
-                              style={{
-                                marginBottom: "7px",
-                              }}
-                              className="text-light"
-                            ></PersonOutlinedIcon>
-                          </h5>
+                          <PersonOutlinedIcon
+                            style={{ marginBottom: "7px" }}
+                            className="text-light"
+                          />
                         </InputAdornment>
                       }
                       type="text"
@@ -181,14 +177,10 @@ function Login() {
                             marginTop: "8px",
                           }}
                         >
-                          <h5>
-                            <KeyTwoToneIcon
-                              style={{
-                                marginBottom: "7px",
-                              }}
-                              className="text-white"
-                            ></KeyTwoToneIcon>
-                          </h5>
+                          <KeyTwoToneIcon
+                            style={{ marginBottom: "7px" }}
+                            className="text-white"
+                          />
                         </InputAdornment>
                       }
                       type={showPassword ? "text" : "password"}
@@ -222,31 +214,24 @@ function Login() {
               </Form.Group>
 
               <div className="text-center mb-3">
-                {!isRegistered && (
-                  <Button
-                    variant="link"
-                    onClick={navigateRegister}
-                    className="text-primary"
-                  >
-                    {isLoading ? (
-                      <Spinner animation="border" size="sm" />
-                    ) : (
-                      <>
-                        <p>
-                          <FontAwesomeIcon icon={faUserPlus} className="me-2" />
-                          Register{" "}
-                          <span>
-                            (Don`t Have An Account)
-                          </span>
-                        </p>
-                      </>
-                    )}
-                  </Button>
-                )}
+                <Button
+                  variant="link"
+                  onClick={navigateRegister}
+                  className="text-primary"
+                >
+                  {isLoading ? (
+                    <Spinner animation="border" size="sm" />
+                  ) : (
+                    <>
+                      <FontAwesomeIcon icon={faUserPlus} className="me-2" />
+                      Register <span>(Don`t Have An Account)</span>
+                    </>
+                  )}
+                </Button>
               </div>
 
               <div className="text-center">
-                <Tooltip title="Login" className="">
+                <Tooltip title="Login">
                   <IconButton
                     aria-label="fingerprint"
                     type="submit"
@@ -269,7 +254,7 @@ function Login() {
             </Form>
           )}
         </Formik>
-        <ToastContainer></ToastContainer>
+        <ToastContainer />
       </div>
     </div>
   );
