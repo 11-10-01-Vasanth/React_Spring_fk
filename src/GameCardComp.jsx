@@ -11,8 +11,8 @@ import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Skeleton from "@mui/material/Skeleton";
-import PercentSharpIcon from '@mui/icons-material/PercentSharp';
-import CurrencyRupeeSharpIcon from '@mui/icons-material/CurrencyRupeeSharp';
+import PercentSharpIcon from "@mui/icons-material/PercentSharp";
+import CurrencyRupeeSharpIcon from "@mui/icons-material/CurrencyRupeeSharp";
 
 export default function GameCardComp() {
   const [data, setData] = useState([]);
@@ -26,9 +26,12 @@ export default function GameCardComp() {
 
     const timer = setTimeout(() => {
       axios
-        .get(`http://localhost:2001/admin/getAll/${page}/10`)
+        .get(`http://localhost:2001/admin/getAll/${page}/8`)
         .then((response) => {
           setData(response.data.content);
+          response.data.content.map((content) => {
+            console.log(content.gamecategory);
+          });
           setTotalPages(response.data.totalPages);
           setLoading(false);
         })
@@ -36,7 +39,7 @@ export default function GameCardComp() {
           setError(err);
           setLoading(false);
         });
-    }, 700); // 2-second delay
+    }, 700);
 
     // Cleanup the timer if the component unmounts or page changes
     return () => clearTimeout(timer);
@@ -44,27 +47,55 @@ export default function GameCardComp() {
 
   if (loading) {
     return (
-      <div className="container mt-5">
-        <div className="row">
-          {[1, 2, 3].map((_, index) => (
-            <div className="col-md-4 mb-4" key={index}>
-              <Card sx={{ height:500, width: 320, maxWidth: "100%", boxShadow: "lg" }}>
-                <CardOverflow>
-                  <Skeleton variant="rectangular" width="100%" height={200} />
-                </CardOverflow>
-                <CardContent>
-                  <Skeleton variant="text" />
-                  <Skeleton variant="text" />
-                  <Skeleton variant="text" width="60%" />
-                </CardContent>
-                <CardOverflow>
-                  <Skeleton variant="rectangular" width="100%" height={40} />
-                </CardOverflow>
-              </Card>
-            </div>
-          ))}
+      <>
+        <div className="d-flex justify-content-center mt-4">
+          <Button
+            variant="outlined"
+            color="neutral"
+            onClick={() => setPage(page - 1)}
+            disabled={page === 0}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outlined"
+            color="neutral"
+            onClick={() => setPage(page + 1)}
+            disabled={page >= totalPages - 1}
+            className="ms-2"
+          >
+            Next
+          </Button>
         </div>
-      </div>
+        <div className="container mt-5">
+          <div className="row">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((_, index) => (
+              <div className="col-md-4 mb-4" key={index}>
+                <Card
+                  sx={{
+                    height: 500,
+                    width: 320,
+                    maxWidth: "100%",
+                    boxShadow: "lg",
+                  }}
+                >
+                  <CardOverflow>
+                    <Skeleton variant="rectangular" width="100%" height={200} />
+                  </CardOverflow>
+                  <CardContent>
+                    <Skeleton variant="text" />
+                    <Skeleton variant="text" />
+                    <Skeleton variant="text" width="60%" />
+                  </CardContent>
+                  <CardOverflow>
+                    <Skeleton variant="rectangular" width="100%" height={40} />
+                  </CardOverflow>
+                </Card>
+              </div>
+            ))}
+          </div>
+        </div>
+      </>
     );
   }
   if (error) return <div>Error: {error.message}</div>;
@@ -94,7 +125,14 @@ export default function GameCardComp() {
         <div className="row">
           {data.map((game, index) => (
             <div className="col-lg-3 col-md-4 mb-4" key={index}>
-              <Card sx={{ height:500, width: 390, maxWidth: "100%", boxShadow: "lg" }}>
+              <Card
+                sx={{
+                  height: 500,
+                  width: 390,
+                  maxWidth: "100%",
+                  boxShadow: "lg",
+                }}
+              >
                 <CardOverflow>
                   <AspectRatio sx={{ minWidth: 250 }}>
                     <img
@@ -137,7 +175,8 @@ export default function GameCardComp() {
                         </Chip>
                       }
                     >
-                     <CurrencyRupeeSharpIcon></CurrencyRupeeSharpIcon> {game.gameprice} 
+                      <CurrencyRupeeSharpIcon></CurrencyRupeeSharpIcon>{" "}
+                      {game.gameprice}
                     </Typography>
                     <Typography
                       level="title-lg"
