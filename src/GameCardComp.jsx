@@ -17,6 +17,14 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import Paper from "@mui/material/Paper";
+import InputBase from "@mui/material/InputBase";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import SearchIcon from "@mui/icons-material/Search";
+import DirectionsIcon from "@mui/icons-material/Directions";
+import GamesOutlinedIcon from "@mui/icons-material/GamesOutlined";
 
 export default function GameCardComp() {
   const [data, setData] = useState([]);
@@ -25,6 +33,8 @@ export default function GameCardComp() {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [category, setCategory] = useState("Action");
+  const [allcategory, setAllCategory] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handlegamecategory = (event) => {
     const selectedCategory = event.target.value;
@@ -36,10 +46,9 @@ export default function GameCardComp() {
   function getGameByCategory(category) {
     const timer = setTimeout(() => {
       axios
-        .get(`http://localhost:2001/getGameByCategory/${category}`)
+        .get(`http://localhost:2001/admin/getGameByCategory/${category}`)
         .then((response) => {
           setData(response.data);
-          // setTotalPages(response.data.totalPages);
           setLoading(false);
         })
         .catch((err) => {
@@ -48,34 +57,88 @@ export default function GameCardComp() {
         });
     }, 700);
 
-    // Cleanup the timer if the component unmounts or page changes
     return () => clearTimeout(timer);
   }
 
-  useEffect(() => {
-    setLoading(true);
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
-    const timer = setTimeout(() => {
+  function getAllGameCategory() {
+    axios
+      .get(`http://localhost:2001/admin/getAllGameCategory`)
+      .then((res) => {
+        setAllCategory(res.data);
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  }
+
+  const handleSearch = () => {
+    if (searchQuery.trim() !== "") {
       axios
-        .get(`http://localhost:2001/admin/getAll/${page}/8`)
-        .then((response) => {
-          setData(response.data.content);
-          setTotalPages(response.data.totalPages);
-          setLoading(false);
+        .get(`http://localhost:2001/admin/getsearchedgame/${searchQuery}`)
+        .then((res) => {
+          setData(res.data);
         })
         .catch((err) => {
           setError(err);
-          setLoading(false);
         });
-    }, 700);
+    } else {
+      // If search query is empty, fetch the default game list
+      fetchDefaultGames();
+    }
+  };
 
-    // Cleanup the timer if the component unmounts or page changes
-    return () => clearTimeout(timer);
+  const fetchDefaultGames = () => {
+    setLoading(true);
+    axios
+      .get(`http://localhost:2001/admin/getAll/${page}/6`)
+      .then((response) => {
+        setData(response.data.content);
+        setTotalPages(response.data.totalPages);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err);
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchDefaultGames();
+    getAllGameCategory();
   }, [page]);
 
   if (loading) {
     return (
       <>
+        <div className="d-flex justify-content-center mt-4">
+          <InputBase
+            sx={{ ml: 1, flex: 1 }}
+            placeholder="Search"
+            inputProps={{ "aria-label": "search" }}
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
+          <IconButton
+            type="button"
+            sx={{ p: "10px" }}
+            aria-label="search"
+            onClick={handleSearch}
+          >
+            <SearchIcon />
+          </IconButton>
+          <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+          <IconButton
+            color="primary"
+            sx={{ p: "10px" }}
+            aria-label="directions"
+          >
+            <DirectionsIcon />
+          </IconButton>
+        </div>
         <div className="d-flex justify-content-center mt-4">
           <Button
             variant="outlined"
@@ -149,7 +212,7 @@ export default function GameCardComp() {
           Next
         </Button>
       </div>
-      <div className="d-flex justify-content-end container">
+      <div className="d-flex justify-content-between container">
         <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
           <InputLabel id="demo-select-small-label">Category</InputLabel>
           <Select
@@ -159,12 +222,42 @@ export default function GameCardComp() {
             label="Category"
             onChange={handlegamecategory}
           >
-            <MenuItem value="Action">Action</MenuItem>
-            <MenuItem value="Adventure">Adventure</MenuItem>
-            <MenuItem value="RPG">RPG</MenuItem>
-            <MenuItem value="Shooter">Shooter</MenuItem>
+            {allcategory.map((element, index) => (
+              <MenuItem key={index} value={element}>
+                {element}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
+        <Paper
+          component="form"
+          sx={{
+            p: "2px 4px",
+            display: "flex",
+            alignItems: "center",
+            width: 400,
+          }}
+        >
+          <IconButton sx={{ p: "10px" }} aria-label="menu">
+            <GamesOutlinedIcon />
+          </IconButton>
+          <InputBase
+            sx={{ ml: 1, flex: 1 }}
+            placeholder="Search"
+            inputProps={{ "aria-label": "search" }}
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
+          <IconButton
+            type="button"
+            sx={{ p: "10px" }}
+            aria-label="search"
+            onClick={handleSearch}
+          >
+            <SearchIcon />
+          </IconButton>
+          <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+        </Paper>
       </div>
       <div className="container mt-5">
         <div className="row flex flex-center">
