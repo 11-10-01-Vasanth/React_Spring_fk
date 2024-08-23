@@ -73,16 +73,27 @@ export default function AddGames() {
           },
         })
         .then((response) => {
-          toast.success("Successfully Added", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-          console.log(response.data);
+          if (response.data.statusCode === "INTERNAL_SERVER_ERROR") {
+            toast.error("Try Again!!!", {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+          } else {
+            toast.success("Successfully Added", {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+          }
         })
         .catch((err) => {
           toast.error(err, {
@@ -101,12 +112,16 @@ export default function AddGames() {
   const handleFileChange = (event) => {
     const file = event.currentTarget.files[0];
 
-    if (file && file.type.startsWith("image/")) {
+    // Define the allowed file types
+    const allowedFileTypes = ["image/", "video/mp4", "audio/mp3"];
+
+    // Check if the file type is allowed
+    if (file && allowedFileTypes.some((type) => file.type.startsWith(type))) {
       setSelectedFile(file);
       setFileError(null);
     } else {
       setSelectedFile(null);
-      setFileError("Please select an image file.");
+      setFileError("Please select a valid file (image, mp4, or mp3).");
     }
   };
 

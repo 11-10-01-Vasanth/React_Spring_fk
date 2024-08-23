@@ -72,6 +72,7 @@ function Navbar({ name }) {
   const handleCloseUserMenu = (setting) => {
     setAnchorElUser(null);
     if (setting === "Logout" || setting === "Login") {
+      localStorage.clear();
       navigate("/login");
     }
     else{

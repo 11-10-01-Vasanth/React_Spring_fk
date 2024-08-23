@@ -80,7 +80,8 @@ function Login() {
 
   if (showLandingPage) {
     // return <LandingPage username={name} />;
-    navigate('/', { state: { username: name } });
+    localStorage.setItem("username",name);
+    navigate("/");
   }
 
   return (

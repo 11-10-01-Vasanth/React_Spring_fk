@@ -21,12 +21,14 @@ import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import DirectionsIcon from "@mui/icons-material/Directions";
-import GamesOutlinedIcon from "@mui/icons-material/GamesOutlined";
+import ClearIcon from "@mui/icons-material/Clear";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import { useNavigate } from "react-router-dom";
 
 export default function GameCardComp() {
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -64,6 +66,17 @@ export default function GameCardComp() {
     setSearchQuery(e.target.value);
   };
 
+  const clearSearch = () => {
+    setSearchQuery("");
+    fetchDefaultGames();
+  };
+
+  function navigateGame(id,name) {
+    navigate(`/games/${name}`)
+    localStorage.setItem("gameid",id)
+    console.log(id);
+  }
+
   function getAllGameCategory() {
     axios
       .get(`http://localhost:2001/admin/getAllGameCategory`)
@@ -94,7 +107,7 @@ export default function GameCardComp() {
   const fetchDefaultGames = () => {
     setLoading(true);
     axios
-      .get(`http://localhost:2001/admin/getAll/${page}/6`)
+      .get(`http://localhost:2001/admin/getAll/${page}/12`)
       .then((response) => {
         setData(response.data.content);
         setTotalPages(response.data.totalPages);
@@ -236,11 +249,15 @@ export default function GameCardComp() {
             display: "flex",
             alignItems: "center",
             width: 400,
+            borderRadius: "25px",
+            boxShadow: "0px 3px 6px rgba(0,0,0,0.1)",
           }}
         >
-          <IconButton sx={{ p: "10px" }} aria-label="menu">
-            <GamesOutlinedIcon />
-          </IconButton>
+          {searchQuery && (
+            <IconButton onClick={clearSearch} aria-label="clear search">
+              <ClearIcon />
+            </IconButton>
+          )}
           <InputBase
             sx={{ ml: 1, flex: 1 }}
             placeholder="Search"
@@ -256,13 +273,12 @@ export default function GameCardComp() {
           >
             <SearchIcon />
           </IconButton>
-          <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
         </Paper>
       </div>
       <div className="container mt-5">
-        <div className="row flex flex-center">
+        <div className="row flex flex-center justify-content-center">
           {data.map((game, index) => (
-            <div className="col-lg-4 col-md-6 mb-4" key={index}>
+            <div className="col-xl-3 col-lg-4 col-md-6 mb-4" key={index}>
               <Card
                 sx={{
                   height: 500,
@@ -280,10 +296,13 @@ export default function GameCardComp() {
                     />
                   </AspectRatio>
                 </CardOverflow>
-                <CardContent>
+                <CardContent
+                  onClick={() => {
+                    navigateGame(game.gameid,game.gametitle);
+                  }}
+                >
                   <Typography level="body-xs">{game.gamecategory}</Typography>
                   <Link
-                    href="#game-card"
                     fontWeight="md"
                     color="neutral"
                     textColor="text.primary"
@@ -292,6 +311,7 @@ export default function GameCardComp() {
                   >
                     {game.gametitle}
                   </Link>
+
                   <div
                     style={{
                       display: "flex",
@@ -313,8 +333,7 @@ export default function GameCardComp() {
                         </Chip>
                       }
                     >
-                      <CurrencyRupeeSharpIcon></CurrencyRupeeSharpIcon>{" "}
-                      {game.gameprice}
+                      <CurrencyRupeeSharpIcon /> {game.gameprice}
                     </Typography>
                     <Typography
                       level="title-lg"
@@ -330,16 +349,33 @@ export default function GameCardComp() {
                         </Chip>
                       }
                     >
-                      {game.gamediscount} <PercentSharpIcon></PercentSharpIcon>
+                      {game.gamediscount} <PercentSharpIcon />
                     </Typography>
                   </div>
+
                   <Typography level="body-sm">
                     {game.gamedescription}
                   </Typography>
+
+                  {/* <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginTop: "1rem",
+                    }}
+                  >
+                    <ExploreIcon style={{ marginRight: "0.5rem" }} />
+                    <Typography level="body-md" fontWeight="md">
+                      
+                    </Typography>
+                    <GamingIcon style={{ marginLeft: "auto" }} />
+                  </div> */}
                 </CardContent>
+
                 <CardOverflow>
                   <Button variant="solid" color="danger" size="lg">
-                    Add to cart
+                    Explore{" "}
+                    <KeyboardDoubleArrowRightIcon></KeyboardDoubleArrowRightIcon>
                   </Button>
                 </CardOverflow>
               </Card>

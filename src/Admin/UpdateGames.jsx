@@ -211,12 +211,24 @@ export default function UpdateGames({ search }) {
                 <TableCell align="center">{item.gamediscount}</TableCell>
                 <TableCell align="center">{item.gameprice}</TableCell>
                 <TableCell align="center">
-                  <img
-                    src={`http://localhost:2001/uploads/${item.gameimage}`}
-                    style={{ height: "100px", width: "200px" }}
-                    alt={item.gametitle}
-                  />
+                  {item.gameimage.endsWith(".mp4") ||
+                  item.gameimage.endsWith(".webm") ? (
+                    <video controls style={{ height: "100px", width: "200px" }}>
+                      <source
+                        src={`http://localhost:2001/uploads/${item.gameimage}`}
+                        type="video/mp4"
+                      />
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : (
+                    <img
+                      src={`http://localhost:2001/uploads/${item.gameimage}`}
+                      style={{ height: "100px", width: "200px" }}
+                      alt={item.gametitle}
+                    />
+                  )}
                 </TableCell>
+
                 <TableCell align="center">
                   <IconButton
                     aria-label="delete"
