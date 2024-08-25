@@ -21,6 +21,8 @@ import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
 import ClearIcon from "@mui/icons-material/Clear";
 import Skeleton from "@mui/material/Skeleton";
+import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
+import DriveFileRenameOutlineSharpIcon from "@mui/icons-material/DriveFileRenameOutlineSharp";
 
 // eslint-disable-next-line react/prop-types
 export default function UpdateGames({ search }) {
@@ -79,6 +81,8 @@ export default function UpdateGames({ search }) {
       }
     });
   }
+
+  function updateGame(id) {}
 
   if (loading) {
     return (
@@ -142,6 +146,9 @@ export default function UpdateGames({ search }) {
                   <TableCell align="center">
                     <Skeleton variant="text" width={50} />
                   </TableCell>
+                  <TableCell align="center">
+                    <Skeleton variant="text" width={50} />
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -195,6 +202,9 @@ export default function UpdateGames({ search }) {
               <TableCell align="center">
                 <DeleteSweepIcon />
               </TableCell>
+              <TableCell align="center">
+                <DriveFileRenameOutlineIcon />
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -235,6 +245,14 @@ export default function UpdateGames({ search }) {
                     onClick={() => deleteGame(item.gameid)} // Wrap in an arrow function
                   >
                     <ClearIcon />
+                  </IconButton>
+                </TableCell>
+                <TableCell align="center">
+                  <IconButton
+                    aria-label="delete"
+                    onClick={() => updateGame(item.gameid)} // Wrap in an arrow function
+                  >
+                    <DriveFileRenameOutlineSharpIcon />
                   </IconButton>
                 </TableCell>
               </TableRow>

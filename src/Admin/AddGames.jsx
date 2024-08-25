@@ -64,8 +64,6 @@ export default function AddGames() {
       formData.append("gamecategory", values.gamecategory);
       formData.append("gameimage", selectedFile);
 
-      console.log(formData);
-
       axios
         .post("http://localhost:2001/admin/addgames", formData, {
           headers: {

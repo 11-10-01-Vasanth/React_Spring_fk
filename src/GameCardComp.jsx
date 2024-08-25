@@ -71,9 +71,9 @@ export default function GameCardComp() {
     fetchDefaultGames();
   };
 
-  function navigateGame(id,name) {
-    navigate(`/games/${name}`)
-    localStorage.setItem("gameid",id)
+  function navigateGame(id, name) {
+    navigate(`/games/${name}`);
+    localStorage.setItem("gameid", id);
     console.log(id);
   }
 
@@ -127,31 +127,6 @@ export default function GameCardComp() {
   if (loading) {
     return (
       <>
-        <div className="d-flex justify-content-center mt-4">
-          <InputBase
-            sx={{ ml: 1, flex: 1 }}
-            placeholder="Search"
-            inputProps={{ "aria-label": "search" }}
-            value={searchQuery}
-            onChange={handleSearchChange}
-          />
-          <IconButton
-            type="button"
-            sx={{ p: "10px" }}
-            aria-label="search"
-            onClick={handleSearch}
-          >
-            <SearchIcon />
-          </IconButton>
-          <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-          <IconButton
-            color="primary"
-            sx={{ p: "10px" }}
-            aria-label="directions"
-          >
-            <DirectionsIcon />
-          </IconButton>
-        </div>
         <div className="d-flex justify-content-center mt-4">
           <Button
             variant="outlined"
@@ -298,7 +273,7 @@ export default function GameCardComp() {
                 </CardOverflow>
                 <CardContent
                   onClick={() => {
-                    navigateGame(game.gameid,game.gametitle);
+                    navigateGame(game.gameid, game.gametitle);
                   }}
                 >
                   <Typography level="body-xs">{game.gamecategory}</Typography>

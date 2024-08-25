@@ -74,9 +74,10 @@ function Navbar({ name }) {
     if (setting === "Logout" || setting === "Login") {
       localStorage.clear();
       navigate("/login");
-    }
-    else{
-      navigate("/admin")
+    } else {
+      if (setting === "Admin") {
+        navigate("/admin");
+      }
     }
   };
 
