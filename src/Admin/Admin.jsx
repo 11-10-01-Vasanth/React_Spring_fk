@@ -26,6 +26,8 @@ import Fade from "@mui/material/Fade";
 import { alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
+import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
+import AddTrendingVideoAdmin from "./AddTrendingVideoAdmin";
 
 const drawerWidth = 240;
 
@@ -137,8 +139,8 @@ const Drawer = styled(MuiDrawer, {
 export default function MiniDrawer() {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const [toSearch, setToSearch] = useState(''); // Corrected state name
-  const [selectedComponent, setSelectedComponent] = useState("add");
+  const [toSearch, setToSearch] = useState(""); // Corrected state name
+  const [selectedComponent, setSelectedComponent] = useState("add fresh game");
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -201,7 +203,16 @@ export default function MiniDrawer() {
         <Divider />
         <List>
           {[
-            { text: "Add", icon: <AddIcon />, component: "add" },
+            {
+              text: "Add fresh game",
+              icon: <AddIcon />,
+              component: "add fresh game",
+            },
+            {
+              text: "Add trending",
+              icon: <VideoLibraryIcon />,
+              component: "add trending",
+            },
             { text: "Edit", icon: <CreateIcon />, component: "edit" },
           ].map((item) => (
             <ListItem key={item.text} disablePadding sx={{ display: "block" }}>
@@ -242,8 +253,9 @@ export default function MiniDrawer() {
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Typography paragraph>
-          {selectedComponent === "add" && <AddGames />}
-          {selectedComponent === "edit" && <UpdateGames search={toSearch} />} {/* Pass toSearch as prop */}
+          {selectedComponent === "add fresh game" && <AddGames />}
+          {selectedComponent === "add trending" && <AddTrendingVideoAdmin />}
+          {selectedComponent === "edit" && <UpdateGames search={toSearch} />}
         </Typography>
       </Box>
     </Box>
