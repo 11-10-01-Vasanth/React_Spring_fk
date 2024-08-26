@@ -23,6 +23,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import Skeleton from "@mui/material/Skeleton";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import DriveFileRenameOutlineSharpIcon from "@mui/icons-material/DriveFileRenameOutlineSharp";
+import { useNavigate } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
 export default function UpdateGames({ search }) {
@@ -31,6 +32,7 @@ export default function UpdateGames({ search }) {
   const [error, setError] = useState(null);
   const [pageSize, setPageSize] = useState(0);
   const [page, setPage] = useState(1); // Initial page set to 1
+  const navigate = useNavigate();
 
   const handleChange = (event, value) => {
     setPage(value);
@@ -82,7 +84,14 @@ export default function UpdateGames({ search }) {
     });
   }
 
-  function updateGame(id) {}
+  async function updateGame(id) {
+    await new Promise((resolve) => {
+      localStorage.setItem("gameid", id);
+      resolve(); // Resolve the promise after setting the item
+    });
+
+    navigate("/toUpdate");
+  }
 
   if (loading) {
     return (
