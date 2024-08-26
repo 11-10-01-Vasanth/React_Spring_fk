@@ -34,7 +34,7 @@ export default function GameCardComp() {
   const [error, setError] = useState(null);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const [category, setCategory] = useState("Action");
+  const [category, setCategory] = useState("");
   const [allcategory, setAllCategory] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
