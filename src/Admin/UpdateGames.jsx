@@ -24,6 +24,7 @@ import Skeleton from "@mui/material/Skeleton";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import DriveFileRenameOutlineSharpIcon from "@mui/icons-material/DriveFileRenameOutlineSharp";
 import UpdateGame from "./UpdateGame";
+import SlowMotionVideoIcon from "@mui/icons-material/SlowMotionVideo";
 
 // eslint-disable-next-line react/prop-types
 export default function UpdateGames({ search }) {
@@ -45,26 +46,31 @@ export default function UpdateGames({ search }) {
     getAllGame(page);
   }, [page]);
 
-  function getAllGame(page) {
+  async function getAllGame(page) {
     // Set the loading state immediately
     setLoading(true);
 
-    // Perform both the axios request and a 2-second timeout simultaneously
-    Promise.all([
-      axios.get(`http://localhost:2001/admin/getAll/${page - 1}/10`), // Adjusted for 0-indexed page
-      new Promise((resolve) => setTimeout(resolve, 500)), // 2-second delay
-    ])
-      .then(([response]) => {
-        // Handle the response after both axios request and timeout are complete
-        setData(response.data.content);
-        setPageSize(response.data.totalPages); // Get total pages from response
-        setLoading(false);
-      })
-      .catch((err) => {
-        // Handle errors
-        setError(err);
-        setLoading(false);
-      });
+    try {
+      // Perform both the axios request and a 2-second timeout simultaneously
+      const [response] = await Promise.all([
+        axios.get(`http://localhost:2001/admin/getAll/${page - 1}/10`), // Adjusted for 0-indexed page
+        new Promise((resolve) => setTimeout(resolve, 500)), // 2-second delay
+      ]);
+
+      // Handle the response after both axios request and timeout are complete
+      setData(response.data.content);
+
+      setPageSize(response.data.totalPages); // Get total pages from response
+    } catch (err) {
+      // Handle errors
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function video(id) {
+    console.log(id);
   }
 
   function deleteGame(gameid) {
@@ -128,8 +134,14 @@ export default function UpdateGames({ search }) {
                   <ImageIcon />
                 </TableCell>
                 <TableCell align="center">
+                  <SlowMotionVideoIcon />
+                </TableCell>
+                <TableCell align="center">
                   <DeleteSweepIcon />
                 </TableCell>
+                <TableCell align="center">
+                    <DriveFileRenameOutlineIcon />
+                  </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -152,6 +164,9 @@ export default function UpdateGames({ search }) {
                   </TableCell>
                   <TableCell align="center">
                     <Skeleton variant="rectangular" width={200} height={100} />
+                  </TableCell>
+                  <TableCell align="center">
+                    <Skeleton variant="text" width={50} />
                   </TableCell>
                   <TableCell align="center">
                     <Skeleton variant="text" width={50} />
@@ -212,11 +227,15 @@ export default function UpdateGames({ search }) {
                     <ImageIcon />
                   </TableCell>
                   <TableCell align="center">
+                    <SlowMotionVideoIcon />
+                  </TableCell>
+                  <TableCell align="center">
                     <DeleteSweepIcon />
                   </TableCell>
                   <TableCell align="center">
                     <DriveFileRenameOutlineIcon />
                   </TableCell>
+                  
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -233,23 +252,99 @@ export default function UpdateGames({ search }) {
                     <TableCell align="center">{item.gamediscount}</TableCell>
                     <TableCell align="center">{item.gameprice}</TableCell>
                     <TableCell align="center">
-                      {item.gameimage.endsWith(".mp4") ||
-                      item.gameimage.endsWith(".webm") ? (
+                      <img
+                        src={`http://localhost:2001/uploads/${item.gameimage}`}
+                        style={{ height: "100px", width: "200px" }}
+                        alt={item.gametitle}
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      {item.trending && item.trending.video1Url ? (
                         <video
                           controls
                           style={{ height: "100px", width: "200px" }}
                         >
                           <source
-                            src={`http://localhost:2001/uploads/${item.gameimage}`}
+                            src={`http://localhost:2001/uploads/${item.trending.video1Url}`}
                             type="video/mp4"
                           />
                           Your browser does not support the video tag.
                         </video>
                       ) : (
                         <img
-                          src={`http://localhost:2001/uploads/${item.gameimage}`}
+                          src="https://via.placeholder.com/200x100.png?text=No+Video1+Available" // Default image URL
+                          alt="Default"
+                          style={{
+                            height: "100px",
+                            width: "200px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      )}
+                      {item.trending && item.trending.video2Url ? (
+                        <video
+                          controls
                           style={{ height: "100px", width: "200px" }}
-                          alt={item.gametitle}
+                        >
+                          <source
+                            src={`http://localhost:2001/uploads/${item.trending.video2Url}`}
+                            type="video/mp4"
+                          />
+                          Your browser does not support the video tag.
+                        </video>
+                      ) : (
+                        <img
+                          src="https://via.placeholder.com/200x100.png?text=No+Video2+Available" // Default image URL
+                          alt="Default"
+                          style={{
+                            height: "100px",
+                            width: "200px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      )}
+                      {item.trending && item.trending.video3Url ? (
+                        <video
+                          controls
+                          style={{ height: "100px", width: "200px" }}
+                        >
+                          <source
+                            src={`http://localhost:2001/uploads/${item.trending.video3Url}`}
+                            type="video/mp4"
+                          />
+                          Your browser does not support the video tag.
+                        </video>
+                      ) : (
+                        <img
+                          src="https://via.placeholder.com/200x100.png?text=No+Video3+Available" // Default image URL
+                          alt="Default"
+                          style={{
+                            height: "100px",
+                            width: "200px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      )}
+                      {item.trending && item.trending.video4Url ? (
+                        <video
+                          controls
+                          style={{ height: "100px", width: "200px" }}
+                        >
+                          <source
+                            src={`http://localhost:2001/uploads/${item.trending.video4Url}`}
+                            type="video/mp4"
+                          />
+                          Your browser does not support the video tag.
+                        </video>
+                      ) : (
+                        <img
+                          src="https://via.placeholder.com/200x100.png?text=No+Video4+Available" // Default image URL
+                          alt="Default"
+                          style={{
+                            height: "100px",
+                            width: "200px",
+                            objectFit: "cover",
+                          }}
                         />
                       )}
                     </TableCell>

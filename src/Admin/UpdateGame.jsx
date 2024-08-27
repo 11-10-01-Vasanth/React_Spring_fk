@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { TextField, Button, Grid, Typography, Container } from "@mui/material";
+import { TextField, Button, Grid, Typography, Container, styled } from "@mui/material";
 import BackupIcon from "@mui/icons-material/Backup";
-import { styled } from "@mui/joy";
-import Alert from "@mui/material/Alert";
-import AlertTitle from "@mui/material/AlertTitle";
 import IconButton from "@mui/material/IconButton";
 import ClearIcon from "@mui/icons-material/Clear";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { InputAdornment } from "@mui/material";
+import TitleIcon from "@mui/icons-material/Title";
+import CategoryIcon from "@mui/icons-material/Category";
+import DescriptionIcon from "@mui/icons-material/Description";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import DiscountIcon from "@mui/icons-material/Discount";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0, 0, 0, 0)",
@@ -103,15 +106,17 @@ export default function UpdateGameWithVideos() {
     if (gameData.gameimage) {
       formData.append("gameimage", gameData.gameimage);
     }
-    ["video1Url", "video2Url", "video3Url", "video4Url"].forEach((video, index) => {
-      if (gameData[video]) {
-        formData.append(video, gameData[video]);
+    ["video1Url", "video2Url", "video3Url", "video4Url"].forEach(
+      (video, index) => {
+        if (gameData[video]) {
+          formData.append(video, gameData[video]);
+        }
       }
-    });
+    );
 
     axios
       .put(`http://localhost:2001/admin/updategames/${gameid}`, formData)
-      .then((response) => {
+      .then(() => {
         toast.success("Game updated successfully", {
           position: "top-center",
           autoClose: 5000,
@@ -142,7 +147,7 @@ export default function UpdateGameWithVideos() {
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
-        Update Game Details
+        Update {gameData.gametitle}
       </Typography>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
@@ -154,6 +159,13 @@ export default function UpdateGameWithVideos() {
               onChange={handleChange}
               fullWidth
               margin="normal"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <TitleIcon />
+                  </InputAdornment>
+                ),
+              }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -164,6 +176,13 @@ export default function UpdateGameWithVideos() {
               onChange={handleChange}
               fullWidth
               margin="normal"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <CategoryIcon />
+                  </InputAdornment>
+                ),
+              }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -176,6 +195,13 @@ export default function UpdateGameWithVideos() {
               rows={4}
               fullWidth
               margin="normal"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <DescriptionIcon />
+                  </InputAdornment>
+                ),
+              }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -186,6 +212,13 @@ export default function UpdateGameWithVideos() {
               onChange={handleChange}
               fullWidth
               margin="normal"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <AttachMoneyIcon />
+                  </InputAdornment>
+                ),
+              }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -196,16 +229,26 @@ export default function UpdateGameWithVideos() {
               onChange={handleChange}
               fullWidth
               margin="normal"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <DiscountIcon />
+                  </InputAdornment>
+                ),
+              }}
             />
           </Grid>
           <Grid item xs={12}>
             <Button
               component="label"
               variant="outlined"
-              startDecorator={<BackupIcon />}
+              startIcon={<BackupIcon />}
               fullWidth
+              style={{ marginBottom: "10px" }}
             >
-              {gameData.gameimage ? gameData.gameimage.name : "Upload Game Image"}
+              {gameData.gameimage
+                ? gameData.gameimage.name
+                : "Upload Game Image"}
               <VisuallyHiddenInput
                 type="file"
                 onChange={handleFileChange("gameimage")}
@@ -222,13 +265,14 @@ export default function UpdateGameWithVideos() {
               </IconButton>
             )}
           </Grid>
-          {["Video 1", "Video 2", "Video 3", "Video 4"].map((label, index) => (
+          {["Video/Image 1", "Video/Image 2", "Video/Image 3", "Video/Image 4"].map((label, index) => (
             <Grid item xs={12} key={index}>
               <Button
                 component="label"
                 variant="outlined"
-                startDecorator={<BackupIcon />}
+                startIcon={<BackupIcon />}
                 fullWidth
+                style={{ marginBottom: "10px" }}
               >
                 {gameData[`video${index + 1}Url`]
                   ? gameData[`video${index + 1}Url`].name
