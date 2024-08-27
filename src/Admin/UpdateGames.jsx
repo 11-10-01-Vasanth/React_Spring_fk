@@ -23,7 +23,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import Skeleton from "@mui/material/Skeleton";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import DriveFileRenameOutlineSharpIcon from "@mui/icons-material/DriveFileRenameOutlineSharp";
-import { useNavigate } from "react-router-dom";
+import UpdateGame from "./UpdateGame";
 
 // eslint-disable-next-line react/prop-types
 export default function UpdateGames({ search }) {
@@ -32,7 +32,8 @@ export default function UpdateGames({ search }) {
   const [error, setError] = useState(null);
   const [pageSize, setPageSize] = useState(0);
   const [page, setPage] = useState(1); // Initial page set to 1
-  const navigate = useNavigate();
+  const [showupdate, setshowUpdate] = useState(false);
+  const [showtable, setshowTable] = useState(true);
 
   const handleChange = (event, value) => {
     setPage(value);
@@ -87,10 +88,10 @@ export default function UpdateGames({ search }) {
   async function updateGame(id) {
     await new Promise((resolve) => {
       localStorage.setItem("gameid", id);
+      setshowTable(false);
+      setshowUpdate(true);
       resolve(); // Resolve the promise after setting the item
     });
-
-    navigate("/toUpdate");
   }
 
   if (loading) {
@@ -178,106 +179,114 @@ export default function UpdateGames({ search }) {
 
   return (
     <>
-      <Stack spacing={2} alignItems="center" marginTop={2}>
-        <Pagination
-          count={pageSize}
-          page={page}
-          onChange={handleChange}
-          color="primary"
-        />
-      </Stack>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="games table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">
-                <TitleIcon />
-              </TableCell>
-              <TableCell align="center">
-                <DescriptionIcon />
-              </TableCell>
-              <TableCell align="center">
-                <CategoryIcon />
-              </TableCell>
-              <TableCell align="center">
-                <DiscountIcon />
-              </TableCell>
-              <TableCell align="center">
-                <PriceIcon />
-              </TableCell>
-              <TableCell align="center">
-                <ImageIcon />
-              </TableCell>
-              <TableCell align="center">
-                <DeleteSweepIcon />
-              </TableCell>
-              <TableCell align="center">
-                <DriveFileRenameOutlineIcon />
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.map((item) => (
-              <TableRow
-                key={item.id}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell align="center" component="th" scope="row">
-                  {item.gametitle}
-                </TableCell>
-                <TableCell align="center">{item.gamedescription}</TableCell>
-                <TableCell align="center">{item.gamecategory}</TableCell>
-                <TableCell align="center">{item.gamediscount}</TableCell>
-                <TableCell align="center">{item.gameprice}</TableCell>
-                <TableCell align="center">
-                  {item.gameimage.endsWith(".mp4") ||
-                  item.gameimage.endsWith(".webm") ? (
-                    <video controls style={{ height: "100px", width: "200px" }}>
-                      <source
-                        src={`http://localhost:2001/uploads/${item.gameimage}`}
-                        type="video/mp4"
-                      />
-                      Your browser does not support the video tag.
-                    </video>
-                  ) : (
-                    <img
-                      src={`http://localhost:2001/uploads/${item.gameimage}`}
-                      style={{ height: "100px", width: "200px" }}
-                      alt={item.gametitle}
-                    />
-                  )}
-                </TableCell>
+      {showtable && (
+        <>
+          <Stack spacing={2} alignItems="center" marginTop={2}>
+            <Pagination
+              count={pageSize}
+              page={page}
+              onChange={handleChange}
+              color="primary"
+            />
+          </Stack>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="games table">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="center">
+                    <TitleIcon />
+                  </TableCell>
+                  <TableCell align="center">
+                    <DescriptionIcon />
+                  </TableCell>
+                  <TableCell align="center">
+                    <CategoryIcon />
+                  </TableCell>
+                  <TableCell align="center">
+                    <DiscountIcon />
+                  </TableCell>
+                  <TableCell align="center">
+                    <PriceIcon />
+                  </TableCell>
+                  <TableCell align="center">
+                    <ImageIcon />
+                  </TableCell>
+                  <TableCell align="center">
+                    <DeleteSweepIcon />
+                  </TableCell>
+                  <TableCell align="center">
+                    <DriveFileRenameOutlineIcon />
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data.map((item) => (
+                  <TableRow
+                    key={item.id}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell align="center" component="th" scope="row">
+                      {item.gametitle}
+                    </TableCell>
+                    <TableCell align="center">{item.gamedescription}</TableCell>
+                    <TableCell align="center">{item.gamecategory}</TableCell>
+                    <TableCell align="center">{item.gamediscount}</TableCell>
+                    <TableCell align="center">{item.gameprice}</TableCell>
+                    <TableCell align="center">
+                      {item.gameimage.endsWith(".mp4") ||
+                      item.gameimage.endsWith(".webm") ? (
+                        <video
+                          controls
+                          style={{ height: "100px", width: "200px" }}
+                        >
+                          <source
+                            src={`http://localhost:2001/uploads/${item.gameimage}`}
+                            type="video/mp4"
+                          />
+                          Your browser does not support the video tag.
+                        </video>
+                      ) : (
+                        <img
+                          src={`http://localhost:2001/uploads/${item.gameimage}`}
+                          style={{ height: "100px", width: "200px" }}
+                          alt={item.gametitle}
+                        />
+                      )}
+                    </TableCell>
 
-                <TableCell align="center">
-                  <IconButton
-                    aria-label="delete"
-                    onClick={() => deleteGame(item.gameid)} // Wrap in an arrow function
-                  >
-                    <ClearIcon />
-                  </IconButton>
-                </TableCell>
-                <TableCell align="center">
-                  <IconButton
-                    aria-label="delete"
-                    onClick={() => updateGame(item.gameid)} // Wrap in an arrow function
-                  >
-                    <DriveFileRenameOutlineSharpIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <ToastContainer />
-      <Stack spacing={2} alignItems="center" marginTop={2}>
-        <Pagination
-          count={pageSize}
-          page={page}
-          onChange={handleChange}
-          color="primary"
-        />
-      </Stack>
+                    <TableCell align="center">
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => deleteGame(item.gameid)} // Wrap in an arrow function
+                      >
+                        <ClearIcon />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => updateGame(item.gameid)} // Wrap in an arrow function
+                      >
+                        <DriveFileRenameOutlineSharpIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <ToastContainer />
+          <Stack spacing={2} alignItems="center" marginTop={2}>
+            <Pagination
+              count={pageSize}
+              page={page}
+              onChange={handleChange}
+              color="primary"
+            />
+          </Stack>
+        </>
+      )}
+      {showupdate && <UpdateGame></UpdateGame>}
     </>
   );
 }

@@ -17,8 +17,6 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/admin" element={<Admin />} />
-        <Route path="/toUpdate" element={<UpdateGame />} />
-        <Route path="/games/:title" element={<ShowSelectGame />} />
         <Route path="/games/:title" element={<ShowSelectGame />} />
       </Routes>
     </BrowserRouter>

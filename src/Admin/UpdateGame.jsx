@@ -1,358 +1,268 @@
 import React, { useState, useEffect } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/joy/Button";
+import axios from "axios";
+import { TextField, Button, Grid, Typography, Container } from "@mui/material";
 import BackupIcon from "@mui/icons-material/Backup";
 import { styled } from "@mui/joy";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import IconButton from "@mui/material/IconButton";
 import ClearIcon from "@mui/icons-material/Clear";
-import TitleIcon from "@mui/icons-material/Title";
-import DescriptionIcon from "@mui/icons-material/Description";
-import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
-import CategoryIcon from "@mui/icons-material/Category";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import { useParams } from "react-router-dom"; // Assuming you use react-router for routing
+import "react-toastify/dist/ReactToastify.css";
 
-
-const validationSchema = Yup.object({
-  gametitle: Yup.string().required("Game Title Required"),
-  gamedescription: Yup.string().required("Game Description Required"),
-  gameprice: Yup.number()
-    .required("Game Price Required")
-    .positive("Game Price Required as positive value"),
-  gamediscount: Yup.number()
-    .required("Game Discount Required")
-    .min(0)
-    .max(1000, "Must be between 0 and 1000"),
-  gamecategory: Yup.string().required("Game Category Required"),
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0, 0, 0, 0)",
+  clipPath: "inset(50%)",
+  height: "1px",
+  overflow: "hidden",
+  position: "absolute",
+  bottom: "0",
+  left: "0",
+  whiteSpace: "nowrap",
+  width: "1px",
 });
 
-const VisuallyHiddenInput = styled("input")`
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  height: 1px;
-  overflow: hidden;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  white-space: nowrap;
-  width: 1px;
-`;
-
-export default function UpdateGame() {
+export default function UpdateGameWithVideos() {
   const gameid = localStorage.getItem("gameid");
-  const [selectedFiles, setSelectedFiles] = useState({
-    main: null,
-    image1: null,
-    image2: null,
-    image3: null,
+  const [gameData, setGameData] = useState({
+    gametitle: "",
+    gamecategory: "",
+    gamedescription: "",
+    gameprice: "",
+    gamediscount: "",
+    gameimage: null,
+    video1Url: null,
+    video2Url: null,
+    video3Url: null,
+    video4Url: null,
   });
-  const [fileErrors, setFileErrors] = useState({
-    main: null,
-    image1: null,
-    image2: null,
-    image3: null,
-  });
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fetch the existing game details by ID and set form values
-    axios.get(`http://localhost:2001/admin/getGameById/${gameid}`).then((response) => {
-      const gameData = response.data;
-      formik.setValues({
-        gametitle: gameData.gametitle,
-        gamedescription: gameData.gamedescription,
-        gameprice: gameData.gameprice,
-        gamediscount: gameData.gamediscount,
-        gamecategory: gameData.gamecategory,
-      });
-    });
-  }, [gameid]);
-
-  const formik = useFormik({
-    initialValues: {
-      gametitle: "",
-      gamedescription: "",
-      gameprice: "",
-      gamediscount: "",
-      gamecategory: "",
-    },
-    validationSchema: validationSchema,
-    onSubmit: (values) => {
-      const formData = new FormData();
-      formData.append("gametitle", values.gametitle);
-      formData.append("gamedescription", values.gamedescription);
-      formData.append("gameprice", values.gameprice);
-      formData.append("gamediscount", values.gamediscount);
-      formData.append("gamecategory", values.gamecategory);
-      
-      // Append selected files if they exist
-      if (selectedFiles.main) formData.append("gameimage", selectedFiles.main);
-      if (selectedFiles.image1) formData.append("gameimage1", selectedFiles.image1);
-      if (selectedFiles.image2) formData.append("gameimage2", selectedFiles.image2);
-      if (selectedFiles.image3) formData.append("gameimage3", selectedFiles.image3);
-
+    if (gameid) {
       axios
-        .put(`http://localhost:2001/admin/updategames/${gameid}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+        .get(`http://localhost:2001/admin/getGameById/${gameid}`)
         .then((response) => {
-          toast.success("Game updated successfully", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
+          if (response.data.length > 0) {
+            const data = response.data[0];
+            setGameData({
+              gametitle: data.gametitle || "",
+              gamecategory: data.gamecategory || "",
+              gamedescription: data.gamedescription || "",
+              gameprice: data.gameprice || "",
+              gamediscount: data.gamediscount || "",
+              gameimage: null,
+              video1Url: null,
+              video2Url: null,
+              video3Url: null,
+              video4Url: null,
+            });
+          } else {
+            setError("Game data not found.");
+          }
         })
         .catch((err) => {
-          toast.error("Error updating game", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
+          console.error("Error fetching game data:", err);
+          setError("An error occurred while fetching game data.");
         });
-    },
-  });
-
-  const handleFileChange = (event, field) => {
-    const file = event.currentTarget.files[0];
-    const allowedFileTypes = ["image/jpeg", "image/png", "image/gif"]; // Adjust the types as needed
-
-    if (file && allowedFileTypes.includes(file.type)) {
-      setSelectedFiles((prevState) => ({
-        ...prevState,
-        [field]: file,
-      }));
-      setFileErrors((prevState) => ({
-        ...prevState,
-        [field]: null,
-      }));
     } else {
-      setSelectedFiles((prevState) => ({
-        ...prevState,
-        [field]: null,
-      }));
-      setFileErrors((prevState) => ({
-        ...prevState,
-        [field]: "Please select a valid image file (jpeg, png, gif).",
-      }));
+      setError("Game ID is not available.");
     }
+  }, [gameid]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setGameData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const handleClearFile = (field) => {
-    setSelectedFiles((prevState) => ({
-      ...prevState,
-      [field]: null,
+  const handleFileChange = (field) => (e) => {
+    setGameData((prevData) => ({
+      ...prevData,
+      [field]: e.target.files[0],
     }));
-    setFileErrors((prevState) => ({
-      ...prevState,
+  };
+
+  const handleClearFile = (field) => () => {
+    setGameData((prevData) => ({
+      ...prevData,
       [field]: null,
     }));
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("gametitle", gameData.gametitle);
+    formData.append("gamecategory", gameData.gamecategory);
+    formData.append("gamedescription", gameData.gamedescription);
+    formData.append("gameprice", gameData.gameprice);
+    formData.append("gamediscount", gameData.gamediscount);
+    if (gameData.gameimage) {
+      formData.append("gameimage", gameData.gameimage);
+    }
+    ["video1Url", "video2Url", "video3Url", "video4Url"].forEach((video, index) => {
+      if (gameData[video]) {
+        formData.append(video, gameData[video]);
+      }
+    });
+
+    axios
+      .put(`http://localhost:2001/admin/updategames/${gameid}`, formData)
+      .then((response) => {
+        toast.success("Game updated successfully", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      })
+      .catch((error) => {
+        toast.error(`Error: ${error.message}`, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      });
+  };
+
+  if (error) {
+    return <Typography color="error">Error: {error}</Typography>;
+  }
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 3,
-        padding: 2,
-        maxWidth: 600,
-        margin: "auto",
-      }}
-    >
-      <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, width: "100%" }}>
-          <TextField
-            id="gametitle"
-            name="gametitle"
-            label="Game Title"
-            variant="outlined"
-            size="medium"
-            value={formik.values.gametitle}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.gametitle && Boolean(formik.errors.gametitle)}
-            helperText={formik.touched.gametitle && formik.errors.gametitle}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <IconButton>
-                  <TitleIcon />
-                </IconButton>
-              ),
-            }}
-          />
-          <TextField
-            id="gamedescription"
-            name="gamedescription"
-            label="Game Description"
-            variant="outlined"
-            size="medium"
-            value={formik.values.gamedescription}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={
-              formik.touched.gamedescription &&
-              Boolean(formik.errors.gamedescription)
-            }
-            helperText={
-              formik.touched.gamedescription && formik.errors.gamedescription
-            }
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <IconButton>
-                  <DescriptionIcon />
-                </IconButton>
-              ),
-            }}
-          />
-          <TextField
-            id="gameprice"
-            name="gameprice"
-            label="Game Price"
-            variant="outlined"
-            size="medium"
-            value={formik.values.gameprice}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.gameprice && Boolean(formik.errors.gameprice)}
-            helperText={formik.touched.gameprice && formik.errors.gameprice}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <IconButton>
-                  <MonetizationOnIcon />
-                </IconButton>
-              ),
-            }}
-          />
-          <TextField
-            id="gamediscount"
-            name="gamediscount"
-            label="Game Discount"
-            variant="outlined"
-            size="medium"
-            value={formik.values.gamediscount}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={
-              formik.touched.gamediscount && Boolean(formik.errors.gamediscount)
-            }
-            helperText={
-              formik.touched.gamediscount && formik.errors.gamediscount
-            }
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <IconButton>
-                  <MonetizationOnIcon />
-                </IconButton>
-              ),
-            }}
-          />
-          <TextField
-            id="gamecategory"
-            name="gamecategory"
-            label="Game Category"
-            variant="outlined"
-            size="medium"
-            value={formik.values.gamecategory}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={
-              formik.touched.gamecategory && Boolean(formik.errors.gamecategory)
-            }
-            helperText={
-              formik.touched.gamecategory && formik.errors.gamecategory
-            }
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <IconButton>
-                  <CategoryIcon />
-                </IconButton>
-              ),
-            }}
-          />
-        </Box>
-
-        <Box sx={{ marginTop: 3 }}>
-          {["main", "image1", "image2", "image3"].map((field, index) => (
-            <Box
-              key={field}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 2,
-                marginBottom: 2,
-              }}
+    <Container maxWidth="sm">
+      <Typography variant="h4" gutterBottom>
+        Update Game Details
+      </Typography>
+      <form onSubmit={handleSubmit}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              label="Title"
+              name="gametitle"
+              value={gameData.gametitle}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Category"
+              name="gamecategory"
+              value={gameData.gamecategory}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Description"
+              name="gamedescription"
+              value={gameData.gamedescription}
+              onChange={handleChange}
+              multiline
+              rows={4}
+              fullWidth
+              margin="normal"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Price"
+              name="gameprice"
+              value={gameData.gameprice}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Discount"
+              name="gamediscount"
+              value={gameData.gamediscount}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              component="label"
+              variant="outlined"
+              startDecorator={<BackupIcon />}
+              fullWidth
             >
-              <Button
-                startIcon={<BackupIcon />}
-                variant="soft"
-                component="label"
+              {gameData.gameimage ? gameData.gameimage.name : "Upload Game Image"}
+              <VisuallyHiddenInput
+                type="file"
+                onChange={handleFileChange("gameimage")}
+                accept="image/*"
+              />
+            </Button>
+            {gameData.gameimage && (
+              <IconButton
+                color="inherit"
+                onClick={handleClearFile("gameimage")}
+                aria-label="clear file"
               >
-                {index === 0 ? "Main Image" : `Image ${index}`}
+                <ClearIcon fontSize="small" />
+              </IconButton>
+            )}
+          </Grid>
+          {["Video 1", "Video 2", "Video 3", "Video 4"].map((label, index) => (
+            <Grid item xs={12} key={index}>
+              <Button
+                component="label"
+                variant="outlined"
+                startDecorator={<BackupIcon />}
+                fullWidth
+              >
+                {gameData[`video${index + 1}Url`]
+                  ? gameData[`video${index + 1}Url`].name
+                  : `Upload ${label}`}
                 <VisuallyHiddenInput
                   type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileChange(e, field)}
+                  onChange={handleFileChange(`video${index + 1}Url`)}
+                  accept="video/mp4,audio/mp3"
                 />
               </Button>
-              {selectedFiles[field] && (
-                <>
-                  <Alert
-                    severity="info"
-                    sx={{ flexGrow: 1, marginLeft: 2 }}
-                  >
-                    <AlertTitle>{selectedFiles[field].name}</AlertTitle>
-                    {(selectedFiles[field].size / 1024 / 1024).toFixed(2)} MB
-                  </Alert>
-                  <IconButton
-                    aria-label="clear"
-                    size="small"
-                    onClick={() => handleClearFile(field)}
-                  >
-                    <ClearIcon fontSize="inherit" />
-                  </IconButton>
-                </>
+              {gameData[`video${index + 1}Url`] && (
+                <IconButton
+                  color="inherit"
+                  onClick={handleClearFile(`video${index + 1}Url`)}
+                  aria-label="clear file"
+                >
+                  <ClearIcon fontSize="small" />
+                </IconButton>
               )}
-              {fileErrors[field] && (
-                <Alert severity="error" sx={{ flexGrow: 1 }}>
-                  <AlertTitle>{fileErrors[field]}</AlertTitle>
-                </Alert>
-              )}
-            </Box>
+            </Grid>
           ))}
-        </Box>
-
-        <Button
-          sx={{ marginTop: 3, width: "100%" }}
-          type="submit"
-          color="primary"
-          variant="solid"
-        >
-          Update Game
-        </Button>
+          <Grid item xs={12}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              style={{ marginTop: "20px" }}
+            >
+              Update Game
+            </Button>
+          </Grid>
+        </Grid>
       </form>
       <ToastContainer />
-    </Box>
+    </Container>
   );
 }
