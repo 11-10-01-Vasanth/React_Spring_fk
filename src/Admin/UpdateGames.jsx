@@ -140,8 +140,8 @@ export default function UpdateGames({ search }) {
                   <DeleteSweepIcon />
                 </TableCell>
                 <TableCell align="center">
-                    <DriveFileRenameOutlineIcon />
-                  </TableCell>
+                  <DriveFileRenameOutlineIcon />
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -235,7 +235,6 @@ export default function UpdateGames({ search }) {
                   <TableCell align="center">
                     <DriveFileRenameOutlineIcon />
                   </TableCell>
-                  
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -260,16 +259,41 @@ export default function UpdateGames({ search }) {
                     </TableCell>
                     <TableCell align="center">
                       {item.trending && item.trending.video1Url ? (
-                        <video
-                          controls
-                          style={{ height: "100px", width: "200px" }}
-                        >
-                          <source
+                        // Determine if the URL is a video or image based on the file extension
+                        /\.(mp4|webm|ogg)$/i.test(item.trending.video1Url) ? (
+                          <video
+                            controls
+                            style={{ height: "100px", width: "200px" }}
+                          >
+                            <source
+                              src={`http://localhost:2001/uploads/${item.trending.video1Url}`}
+                              type="video/mp4" // You may need to adjust the type based on the video format
+                            />
+                            Your browser does not support the video tag.
+                          </video>
+                        ) : /\.(jpg|jpeg|png|gif|avif)$/i.test(
+                            item.trending.video1Url
+                          ) ? (
+                          <img
                             src={`http://localhost:2001/uploads/${item.trending.video1Url}`}
-                            type="video/mp4"
+                            alt="Content"
+                            style={{
+                              height: "100px",
+                              width: "200px",
+                              objectFit: "cover",
+                            }}
                           />
-                          Your browser does not support the video tag.
-                        </video>
+                        ) : (
+                          <img
+                            src="https://via.placeholder.com/200x100.png?text=No+Video1+Available" // Default image URL
+                            alt="Default"
+                            style={{
+                              height: "100px",
+                              width: "200px",
+                              objectFit: "cover",
+                            }}
+                          />
+                        )
                       ) : (
                         <img
                           src="https://via.placeholder.com/200x100.png?text=No+Video1+Available" // Default image URL

@@ -16,18 +16,42 @@ import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import CategoryIcon from "@mui/icons-material/Category";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { MenuItem, Select, InputLabel, FormControl } from "@mui/material";
 
 const validationSchema = Yup.object({
   gametitle: Yup.string().required("Game Title Required"),
   gamedescription: Yup.string().required("Game Description Required"),
   gameprice: Yup.number()
     .required("Game Price Required")
-    .positive("Game Price Required as positive value"),
+    .positive("Game Price must be a positive value"),
   gamediscount: Yup.number()
     .required("Game Discount Required")
-    .min(0)
-    .max(1000, "Must be between 0 and 1000"),
+    .min(0, "Discount must be at least 0")
+    .max(1000, "Discount must be at most 1000"),
   gamecategory: Yup.string().required("Game Category Required"),
+  agerating: Yup.string().required("Age Rating Required"),
+  releasedate: Yup.date()
+    .required("Release Date Required")
+    .typeError("Invalid Release Date"),
+  gamepublisher: Yup.string().required("Game Publisher Required"),
+  gameplatforms: Yup.string().required("Game Platforms Required"),
+  minsystemrequirements: Yup.string().required(
+    "Minimum System Requirements Required"
+  ),
+  recsystemrequirements: Yup.string().required(
+    "Recommended System Requirements Required"
+  ),
+  gamegenres: Yup.string().required("Game Genres Required"),
+  gamerating: Yup.string().required("Game Rating Required"),
+  gametrailerurl: Yup.string()
+    .url("Invalid URL format")
+    .required("Game Trailer URL Required"),
+  gamefeatures: Yup.string().required("Game Features Required"),
+  supportedlanguages: Yup.string().required("Supported Languages Required"),
+  gameachievements: Yup.string().required("Game Achievements Required"),
+  communitylinks: Yup.string()
+    .url("Invalid URL format")
+    .required("Community Links Required"),
 });
 
 const VisuallyHiddenInput = styled("input")`
@@ -42,9 +66,33 @@ const VisuallyHiddenInput = styled("input")`
   width: 1px;
 `;
 
+const osOptions = ["Windows 10", "Windows 11", "macOS", "Linux"];
+const cpuOptions = [
+  "Intel Core i7-4790",
+  "AMD Ryzen 5 3600",
+  "Intel Core i5-10600K",
+  "AMD Ryzen 7 5800X",
+];
+const ramOptions = ["8GB", "12GB", "16GB", "32GB"];
+const gpuOptions = [
+  "NVIDIA GeForce GTX 1060",
+  "AMD Radeon RX 590",
+  "NVIDIA GeForce RTX 2060",
+  "AMD Radeon RX 6600 XT",
+];
+
 export default function AddGames() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileError, setFileError] = useState(null);
+
+  const [os, setOs] = useState("");
+  const [cpu, setCpu] = useState("");
+  const [ram, setRam] = useState("");
+  const [gpu, setGpu] = useState("");
+  const [ros, setrOs] = useState("");
+  const [rcpu, setrCpu] = useState("");
+  const [rram, setrRam] = useState("");
+  const [rgpu, setrGpu] = useState("");
 
   const formik = useFormik({
     initialValues: {
@@ -53,6 +101,19 @@ export default function AddGames() {
       gameprice: "",
       gamediscount: "",
       gamecategory: "",
+      agerating: "",
+      releasedate: "",
+      gamepublisher: "",
+      gameplatforms: "",
+      minsystemrequirements: "",
+      recsystemrequirements: "",
+      gamegenres: "",
+      gamerating: "",
+      gametrailerurl: "",
+      gamefeatures: "",
+      supportedlanguages: "",
+      gameachievements: "",
+      communitylinks: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -62,6 +123,19 @@ export default function AddGames() {
       formData.append("gameprice", values.gameprice);
       formData.append("gamediscount", values.gamediscount);
       formData.append("gamecategory", values.gamecategory);
+      formData.append("agerating", values.agerating);
+      formData.append("releasedate", values.releasedate);
+      formData.append("gamepublisher", values.gamepublisher);
+      formData.append("gameplatforms", values.gameplatforms);
+      formData.append("minsystemrequirements", values.minsystemrequirements);
+      formData.append("recsystemrequirements", values.recsystemrequirements);
+      formData.append("gamegenres", values.gamegenres);
+      formData.append("gamerating", values.gamerating);
+      formData.append("gametrailerurl", values.gametrailerurl);
+      formData.append("gamefeatures", values.gamefeatures);
+      formData.append("supportedlanguages", values.supportedlanguages);
+      formData.append("gameachievements", values.gameachievements);
+      formData.append("communitylinks", values.communitylinks);
       formData.append("gameimage", selectedFile);
 
       axios
@@ -106,6 +180,20 @@ export default function AddGames() {
         });
     },
   });
+
+  const handleUpdateRequirements = () => {
+    formik.setFieldValue(
+      "minsystemrequirements",
+      `OS: ${os}, CPU: ${cpu}, RAM: ${ram}, GPU: ${gpu}`
+    );
+  };
+
+  const handleRecUpdateRequirements = () => {
+    formik.setFieldValue(
+      "recsystemrequirements",
+      `OS: ${ros}, CPU: ${rcpu}, RAM: ${rram}, GPU: ${rgpu}`
+    );
+  };
 
   const handleFileChange = (event) => {
     const file = event.currentTarget.files[0];
@@ -255,6 +343,491 @@ export default function AddGames() {
               ),
             }}
           />
+          <TextField
+            id="agerating"
+            name="agerating"
+            label="Age Rating"
+            variant="outlined"
+            size="medium"
+            value={formik.values.agerating}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.agerating && Boolean(formik.errors.agerating)}
+            helperText={formik.touched.agerating && formik.errors.agerating}
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <IconButton position="start">
+                  <CategoryIcon />
+                </IconButton>
+              ),
+            }}
+            aria-describedby="agerating-helper-text"
+            aria-invalid={Boolean(formik.errors.agerating)}
+          />
+          <TextField
+            id="releasedate"
+            name="releasedate"
+            label="Release Date"
+            variant="outlined"
+            type="date"
+            value={formik.values.releasedate}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.releasedate && Boolean(formik.errors.releasedate)
+            }
+            helperText={formik.touched.releasedate && formik.errors.releasedate}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            InputProps={{
+              startAdornment: (
+                <IconButton>
+                  <BackupIcon />
+                </IconButton>
+              ),
+            }}
+          />
+
+          <TextField
+            id="gamepublisher"
+            name="gamepublisher"
+            label="Game Publisher"
+            variant="outlined"
+            value={formik.values.gamepublisher}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.gamepublisher &&
+              Boolean(formik.errors.gamepublisher)
+            }
+            helperText={
+              formik.touched.gamepublisher && formik.errors.gamepublisher
+            }
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <IconButton>
+                  <TitleIcon />
+                </IconButton>
+              ),
+            }}
+          />
+
+          <TextField
+            id="gameplatforms"
+            name="gameplatforms"
+            label="Game Platforms"
+            variant="outlined"
+            value={formik.values.gameplatforms}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.gameplatforms &&
+              Boolean(formik.errors.gameplatforms)
+            }
+            helperText={
+              formik.touched.gameplatforms && formik.errors.gameplatforms
+            }
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <IconButton>
+                  <CategoryIcon />
+                </IconButton>
+              ),
+            }}
+          />
+
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <InputLabel id="os-label">Operating System</InputLabel>
+            <Select
+              labelId="os-label"
+              id="os"
+              value={os}
+              onChange={(e) => {
+                setOs(e.target.value);
+                handleUpdateRequirements();
+              }}
+              onBlur={formik.handleBlur}
+              label="Operating System"
+            >
+              {osOptions.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <InputLabel id="cpu-label">CPU</InputLabel>
+            <Select
+              labelId="cpu-label"
+              id="cpu"
+              value={cpu}
+              onChange={(e) => {
+                setCpu(e.target.value);
+                handleUpdateRequirements();
+              }}
+              onBlur={formik.handleBlur}
+              label="CPU"
+            >
+              {cpuOptions.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <InputLabel id="ram-label">RAM</InputLabel>
+            <Select
+              labelId="ram-label"
+              id="ram"
+              value={ram}
+              onChange={(e) => {
+                setRam(e.target.value);
+                handleUpdateRequirements();
+              }}
+              onBlur={formik.handleBlur}
+              label="RAM"
+            >
+              {ramOptions.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <InputLabel id="gpu-label">GPU</InputLabel>
+            <Select
+              labelId="gpu-label"
+              id="gpu"
+              value={gpu}
+              onChange={(e) => {
+                setGpu(e.target.value);
+                handleUpdateRequirements();
+              }}
+              onBlur={formik.handleBlur}
+              label="GPU"
+            >
+              {gpuOptions.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <TextField
+            id="minsystemrequirements"
+            name="minsystemrequirements"
+            label="Minimum System Requirements"
+            variant="outlined"
+            value={formik.values.minsystemrequirements}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.minsystemrequirements &&
+              Boolean(formik.errors.minsystemrequirements)
+            }
+            helperText={
+              formik.touched.minsystemrequirements &&
+              formik.errors.minsystemrequirements
+            }
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <IconButton>
+                  <BackupIcon />
+                </IconButton>
+              ),
+            }}
+          />
+
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <InputLabel id="os-label">Operating System</InputLabel>
+            <Select
+              labelId="os-label"
+              id="os"
+              value={ros}
+              onChange={(e) => {
+                setrOs(e.target.value);
+                handleRecUpdateRequirements();
+              }}
+              onBlur={formik.handleBlur}
+              label="Operating System"
+            >
+              {osOptions.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <InputLabel id="cpu-label">CPU</InputLabel>
+            <Select
+              labelId="cpu-label"
+              id="cpu"
+              value={rcpu}
+              onChange={(e) => {
+                setrCpu(e.target.value);
+                handleRecUpdateRequirements();
+              }}
+              onBlur={formik.handleBlur}
+              label="CPU"
+            >
+              {cpuOptions.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <InputLabel id="ram-label">RAM</InputLabel>
+            <Select
+              labelId="ram-label"
+              id="ram"
+              value={rram}
+              onChange={(e) => {
+                setrRam(e.target.value);
+                handleRecUpdateRequirements();
+              }}
+              onBlur={formik.handleBlur}
+              label="RAM"
+            >
+              {ramOptions.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <InputLabel id="gpu-label">GPU</InputLabel>
+            <Select
+              labelId="gpu-label"
+              id="gpu"
+              value={rgpu}
+              onChange={(e) => {
+                setrGpu(e.target.value);
+                handleRecUpdateRequirements();
+              }}
+              onBlur={formik.handleBlur}
+              label="GPU"
+            >
+              {gpuOptions.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <TextField
+            id="recsystemrequirements"
+            name="recsystemrequirements"
+            label="Recommended System Requirements"
+            variant="outlined"
+            value={formik.values.recsystemrequirements}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.recsystemrequirements &&
+              Boolean(formik.errors.recsystemrequirements)
+            }
+            helperText={
+              formik.touched.recsystemrequirements &&
+              formik.errors.recsystemrequirements
+            }
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <IconButton>
+                  <BackupIcon />
+                </IconButton>
+              ),
+            }}
+          />
+
+          <TextField
+            id="gamegenres"
+            name="gamegenres"
+            label="Game Genres"
+            variant="outlined"
+            value={formik.values.gamegenres}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.gamegenres && Boolean(formik.errors.gamegenres)
+            }
+            helperText={formik.touched.gamegenres && formik.errors.gamegenres}
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <IconButton>
+                  <CategoryIcon />
+                </IconButton>
+              ),
+            }}
+          />
+
+          <TextField
+            id="gamerating"
+            name="gamerating"
+            label="Game Rating"
+            variant="outlined"
+            value={formik.values.gamerating}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.gamerating && Boolean(formik.errors.gamerating)
+            }
+            helperText={formik.touched.gamerating && formik.errors.gamerating}
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <IconButton>
+                  <TitleIcon />
+                </IconButton>
+              ),
+            }}
+          />
+
+          <TextField
+            id="gametrailerurl"
+            name="gametrailerurl"
+            label="Game Trailer URL"
+            variant="outlined"
+            value={formik.values.gametrailerurl}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.gametrailerurl &&
+              Boolean(formik.errors.gametrailerurl)
+            }
+            helperText={
+              formik.touched.gametrailerurl && formik.errors.gametrailerurl
+            }
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <IconButton>
+                  <BackupIcon />
+                </IconButton>
+              ),
+            }}
+          />
+
+          <TextField
+            id="gamefeatures"
+            name="gamefeatures"
+            label="Game Features"
+            variant="outlined"
+            value={formik.values.gamefeatures}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.gamefeatures && Boolean(formik.errors.gamefeatures)
+            }
+            helperText={
+              formik.touched.gamefeatures && formik.errors.gamefeatures
+            }
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <IconButton>
+                  <DescriptionIcon />
+                </IconButton>
+              ),
+            }}
+          />
+
+          <TextField
+            id="supportedlanguages"
+            name="supportedlanguages"
+            label="Supported Languages"
+            variant="outlined"
+            value={formik.values.supportedlanguages}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.supportedlanguages &&
+              Boolean(formik.errors.supportedlanguages)
+            }
+            helperText={
+              formik.touched.supportedlanguages &&
+              formik.errors.supportedlanguages
+            }
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <IconButton>
+                  <CategoryIcon />
+                </IconButton>
+              ),
+            }}
+          />
+
+          <TextField
+            id="gameachievements"
+            name="gameachievements"
+            label="Game Achievements"
+            variant="outlined"
+            value={formik.values.gameachievements}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.gameachievements &&
+              Boolean(formik.errors.gameachievements)
+            }
+            helperText={
+              formik.touched.gameachievements && formik.errors.gameachievements
+            }
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <IconButton>
+                  <TitleIcon />
+                </IconButton>
+              ),
+            }}
+          />
+
+          <TextField
+            id="communitylinks"
+            name="communitylinks"
+            label="Community Links"
+            variant="outlined"
+            value={formik.values.communitylinks}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.communitylinks &&
+              Boolean(formik.errors.communitylinks)
+            }
+            helperText={
+              formik.touched.communitylinks && formik.errors.communitylinks
+            }
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <IconButton>
+                  <BackupIcon />
+                </IconButton>
+              ),
+            }}
+          />
+
           <Button
             component="label"
             role={undefined}

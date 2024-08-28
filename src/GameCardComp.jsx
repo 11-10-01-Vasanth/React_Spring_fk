@@ -265,7 +265,7 @@ export default function GameCardComp() {
                 <CardOverflow>
                   <AspectRatio sx={{ minWidth: 250 }}>
                     <img
-                      src={`http://localhost:2001/uploads/${game.gameimage}`}
+                      src={`http://localhost:2001/uploads/${game.trending.video1Url}`}
                       alt={game.gametitle}
                       loading="lazy"
                     />

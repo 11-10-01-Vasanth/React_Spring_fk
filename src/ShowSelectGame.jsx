@@ -2,13 +2,10 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import {
-  Container,
   Typography,
   Chip,
   Box,
   Button,
-  Card,
-  CardContent,
   CardMedia,
   IconButton,
 } from "@mui/material";
@@ -19,24 +16,7 @@ import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import ReviewsIcon from "@mui/icons-material/Reviews";
 import Rating from "@mui/material/Rating";
 import { styled } from "@mui/material/styles";
-
-const images = [
-  {
-    url: "/static/images/buttons/breakfast.jpg",
-    title: "Breakfast",
-    width: "40%",
-  },
-  {
-    url: "/static/images/buttons/burgers.jpg",
-    title: "Burgers",
-    width: "30%",
-  },
-  {
-    url: "/static/images/buttons/camera.jpg",
-    title: "Camera",
-    width: "30%",
-  },
-];
+import { Grid, Divider, Stack } from "@mui/material";
 
 const ImageButton = styled(ButtonBase)(({ theme }) => ({
   position: "relative",
@@ -128,188 +108,143 @@ export default function ShowSelectGame() {
     <>
       <Navbar name={username} />
       {data && (
-        <Container sx={{ paddingY: 4 }}>
-          <Box sx={{ position: "relative", width: "100%" }}>
-            <CardMedia
-              component="img"
-              sx={{
-                width: "100%",
-                height: { xs: 300, sm: "auto" },
-                objectFit: "cover",
-                filter: "brightness(70%)",
-              }}
-              image={`http://localhost:2001/uploads/${data.gameimage}`}
-              alt={data.gametitle}
-            />
-            <Box
-              sx={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                background: "rgba(0, 0, 0, 0.6)",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                color: "white",
-                padding: 3,
-                borderRadius: 2,
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.6)",
-              }}
-            >
-              <Card
-                sx={{
-                  display: "flex",
-                  flexDirection: { xs: "column", sm: "row" },
-                  maxWidth: 1200,
-                  bgcolor: "rgba(255, 255, 255, 0.2)",
-                  backdropFilter: "blur(8px)",
-                  borderRadius: 2,
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)",
-                  textAlign: "center",
-                }}
-              >
-                <CardMedia
-                  component="video"
-                  sx={{
-                    width: { xs: "100%", sm: 400 },
-                    height: { xs: 300, sm: "auto" },
-                    borderRadius: 2,
-                  }}
-                  controls
-                  autoPlay
-                  loop
-                  src={`http://localhost:2001/uploads/${data.trending.video3Url}`} // Replace with your video source
-                  title={data.gametitle}
-                />
-
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    flex: 1,
-                    padding: 3,
-                    alignItems: "center",
-                    bgcolor: "rgba(255, 255, 255, 0.2)",
-                    borderRadius: 2,
-                    gap: 2,
-                  }}
+        <Box
+          sx={{ position: "relative", width: "100%", bgcolor: "#0b0c10", p: 4 }}
+        >
+          <CardMedia
+            component="img"
+            sx={{
+              width: "100%",
+              height: { xs: 300, sm: 500 },
+              objectFit: "cover",
+              filter: "brightness(50%)",
+            }}
+            image={`http://localhost:2001/uploads/${data.trending.video1Url}`}
+            alt={data.gametitle}
+          />
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              background: "rgba(0, 0, 0, 0.7)",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "start",
+              alignItems: "start",
+              color: "white",
+              p: 3,
+            }}
+          >
+            <Grid container spacing={4}>
+              <Grid item xs={12} md={6}>
+                <Typography variant="h3" gutterBottom sx={{ color: "#fff" }}>
+                  {data.gametitle}
+                </Typography>
+                <Typography
+                  paragraph
+                  sx={{ color: "#ddd", fontStyle: "italic" }}
                 >
-                  <CardContent sx={{ flex: "1 0 auto" }}>
-                    <Typography
-                      component="div"
-                      variant="h3"
-                      gutterBottom
-                      sx={{ color: "#fff" }}
-                    >
-                      {data.gametitle}
+                  {data.gamedescription}
+                </Typography>
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}
+                >
+                  <Chip label={data.gamecategory} color="primary" />
+                  <Typography variant="h5" sx={{ color: "#fff" }}>
+                    ${data.gameprice}{" "}
+                    <Typography variant="body1" component="span">
+                      ({data.gamediscount}% off)
                     </Typography>
-                    <Typography paragraph sx={{ color: "#ddd" }}>
-                      <i>{data.gamedescription}</i>
-                    </Typography>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: { xs: "column", sm: "row" },
-                        justifyContent: "space-around",
-                        alignItems: "center",
-                        width: "100%",
-                        marginBottom: 2,
-                        gap: 2,
-                      }}
-                    >
-                      <Chip
-                        label={data.gamecategory}
-                        color="primary"
-                        sx={{ backgroundColor: "#fff", color: "#000" }}
-                      />
-                      <Typography
-                        variant="h5"
-                        gutterBottom
-                        sx={{ color: "#fff" }}
-                      >
-                        ${data.gameprice}{" "}
-                        <Typography variant="body1" component="span">
-                          ({data.gamediscount}% off)
-                        </Typography>
-                      </Typography>
-                      <Rating
-                        sx={{ color: "#f1c40f" }} // Gold color for the rating stars
-                        name="read-only"
-                        value={data.gamerating}
-                        readOnly
-                        precision={0.1}
-                      />
-                    </Box>
-                  </CardContent>
-                  <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
-                    <IconButton aria-label="like" sx={{ color: "white" }}>
-                      <FavoriteBorderIcon />
-                    </IconButton>
-                    <IconButton aria-label="review" sx={{ color: "white" }}>
-                      <ReviewsIcon />
-                    </IconButton>
-                    <IconButton aria-label="explore" sx={{ color: "white" }}>
-                      <OpenInNewIcon />
-                    </IconButton>
-                  </Box>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    sx={{
-                      marginTop: 2,
-                      borderColor: "#fff", // Outline color
-                      color: "#fff", // Text color
-                      "&:hover": {
-                        borderColor: "#fff", // Hover outline color
-                        backgroundColor: "#000", // Hover background color
-                      },
-                    }}
-                  >
-                    Play Now
-                  </Button>
-                </Box>
-              </Card>
-            </Box>
-          </Box>
-          {/* Integrated ButtonBaseDemo */}
-          <Box sx={{ marginTop: 4, display: "flex", flexWrap: "wrap", gap: 2 }}>
-            {data && (
-              <ImageButton
-                focusRipple
-                key={data.gameid}
-                style={{
-                  width: 300,
-                }}
-              >
-                <ImageSrc
-                  style={{
-                    backgroundImage: `url(http://localhost:2001/uploads/${data.gameimage})`,
-                  }}
-                />
-                <ImageBackdrop className="MuiImageBackdrop-root" />
-                <Image>
-                  <Typography
-                    component="span"
-                    variant="subtitle1"
-                    color="inherit"
-                    sx={{
-                      position: "relative",
-                      p: 4,
-                      pt: 2,
-                      pb: (theme) => `calc(${theme.spacing(1)} + 6px)`,
-                    }}
-                  >
-                    {data.gametitle}
-                    <ImageMarked className="MuiImageMarked-root" />
                   </Typography>
-                </Image>
-              </ImageButton>
-            )}
+                  <Rating
+                    name="read-only"
+                    value={parseFloat(data.gamerating)}
+                    readOnly
+                    precision={0.1}
+                    sx={{ color: "#f1c40f" }} // Gold color for the rating stars
+                  />
+                </Box>
+                <Stack spacing={2}>
+                  <Typography variant="body2" sx={{ color: "#aaa" }}>
+                    <strong>Release Date:</strong>{" "}
+                    {new Date(data.releasedate).toDateString()}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: "#aaa" }}>
+                    <strong>Publisher:</strong> {data.gamepublisher}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: "#aaa" }}>
+                    <strong>Platforms:</strong> {data.gameplatforms}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: "#aaa" }}>
+                    <strong>Supported Languages:</strong>{" "}
+                    {data.supportedlanguages}
+                  </Typography>
+                </Stack>
+                <Divider sx={{ my: 2, bgcolor: "#444" }} />
+                <Typography variant="body2" sx={{ color: "#aaa" }}>
+                  <strong>Features:</strong> {data.gamefeatures}
+                </Typography>
+                <Typography variant="body2" sx={{ color: "#aaa", mt: 2 }}>
+                  <strong>Minimum System Requirements:</strong>{" "}
+                  {data.minsystemrequirements}
+                </Typography>
+                <Typography variant="body2" sx={{ color: "#aaa", mt: 1 }}>
+                  <strong>Recommended System Requirements:</strong>{" "}
+                  {data.recsystemrequirements}
+                </Typography>
+                <Divider sx={{ my: 2, bgcolor: "#444" }} />
+                <Box sx={{ display: "flex", gap: 2 }}>
+                  <IconButton aria-label="like" sx={{ color: "white" }}>
+                    <FavoriteBorderIcon />
+                  </IconButton>
+                  <IconButton aria-label="review" sx={{ color: "white" }}>
+                    <ReviewsIcon />
+                  </IconButton>
+                  <IconButton aria-label="explore" sx={{ color: "white" }}>
+                    <OpenInNewIcon />
+                  </IconButton>
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                {data.trending && data.trending.video2Url && (
+                  <CardMedia
+                    component="video"
+                    sx={{
+                      width: "100%",
+                      height: 300,
+                      borderRadius: 2,
+                      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)",
+                    }}
+                    controls
+                    autoPlay
+                    loop
+                    src={`http://localhost:2001/uploads/${data.trending.video2Url}`}
+                    title={data.gametitle}
+                  />
+                )}
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  sx={{
+                    mt: 4,
+                    borderColor: "#fff",
+                    color: "#fff",
+                    "&:hover": {
+                      borderColor: "#fff",
+                      backgroundColor: "#000",
+                    },
+                  }}
+                  onClick={() => window.open(data.communitylinks, "_blank")}
+                >
+                  Join Community
+                </Button>
+              </Grid>
+            </Grid>
           </Box>
-        </Container>
+        </Box>
       )}
     </>
   );
