@@ -36,6 +36,44 @@ export default function UpdateGames({ search }) {
   const [showupdate, setshowUpdate] = useState(false);
   const [showtable, setshowTable] = useState(true);
 
+  const decodeUrl = (url) => {
+    console.log(url.replace(/\+/g, " "));
+    
+    return decodeURIComponent(url.replace(/\+/g, " "));
+  };
+
+  const renderMedia = (url, placeholderText) => {
+    const decodedUrl = decodeUrl(url);
+
+    if (/\.(mp4|webm|ogg)$/i.test(decodedUrl)) {
+      return (
+        <video controls style={{ height: "100px", width: "200px" }}>
+          <source
+            src={`http://localhost:2001/uploads/${decodedUrl}`}
+            type="video/mp4"
+          />
+          Your browser does not support the video tag.
+        </video>
+      );
+    } else if (/\.(jpg|jpeg|png|gif|avif)$/i.test(decodedUrl)) {
+      return (
+        <img
+          src={`http://localhost:2001/uploads/${decodedUrl}`}
+          alt="Content"
+          style={{ height: "100px", width: "200px", objectFit: "cover" }}
+        />
+      );
+    } else {
+      return (
+        <img
+          src={`https://via.placeholder.com/200x100.png?text=${placeholderText}`} // Default image URL
+          alt="Default"
+          style={{ height: "100px", width: "200px", objectFit: "cover" }}
+        />
+      );
+    }
+  };
+
   const handleChange = (event, value) => {
     setPage(value);
     // eslint-disable-next-line react/prop-types
@@ -258,118 +296,35 @@ export default function UpdateGames({ search }) {
                       />
                     </TableCell>
                     <TableCell align="center">
-                      {item.trending && item.trending.video1Url ? (
-                        // Determine if the URL is a video or image based on the file extension
-                        /\.(mp4|webm|ogg)$/i.test(item.trending.video1Url) ? (
-                          <video
-                            controls
-                            style={{ height: "100px", width: "200px" }}
-                          >
-                            <source
-                              src={`http://localhost:2001/uploads/${item.trending.video1Url}`}
-                              type="video/mp4" // You may need to adjust the type based on the video format
-                            />
-                            Your browser does not support the video tag.
-                          </video>
-                        ) : /\.(jpg|jpeg|png|gif|avif)$/i.test(
-                            item.trending.video1Url
-                          ) ? (
-                          <img
-                            src={`http://localhost:2001/uploads/${item.trending.video1Url}`}
-                            alt="Content"
-                            style={{
-                              height: "100px",
-                              width: "200px",
-                              objectFit: "cover",
-                            }}
-                          />
-                        ) : (
-                          <img
-                            src="https://via.placeholder.com/200x100.png?text=No+Video1+Available" // Default image URL
-                            alt="Default"
-                            style={{
-                              height: "100px",
-                              width: "200px",
-                              objectFit: "cover",
-                            }}
-                          />
-                        )
+                      {item.trending ? (
+                        <>
+                          {item.trending.video1Url
+                            ? renderMedia(
+                                item.trending.video1Url,
+                                "No+Video1+Available"
+                              )
+                            : renderMedia("", "No+Video1+Available")}
+                          {item.trending.video2Url
+                            ? renderMedia(
+                                item.trending.video2Url,
+                                "No+Video2+Available"
+                              )
+                            : renderMedia("", "No+Video2+Available")}
+                          {item.trending.video3Url
+                            ? renderMedia(
+                                item.trending.video3Url,
+                                "No+Video3+Available"
+                              )
+                            : renderMedia("", "No+Video3+Available")}
+                          {item.trending.video4Url
+                            ? renderMedia(
+                                item.trending.video4Url,
+                                "No+Video4+Available"
+                              )
+                            : renderMedia("", "No+Video4+Available")}
+                        </>
                       ) : (
-                        <img
-                          src="https://via.placeholder.com/200x100.png?text=No+Video1+Available" // Default image URL
-                          alt="Default"
-                          style={{
-                            height: "100px",
-                            width: "200px",
-                            objectFit: "cover",
-                          }}
-                        />
-                      )}
-                      {item.trending && item.trending.video2Url ? (
-                        <video
-                          controls
-                          style={{ height: "100px", width: "200px" }}
-                        >
-                          <source
-                            src={`http://localhost:2001/uploads/${item.trending.video2Url}`}
-                            type="video/mp4"
-                          />
-                          Your browser does not support the video tag.
-                        </video>
-                      ) : (
-                        <img
-                          src="https://via.placeholder.com/200x100.png?text=No+Video2+Available" // Default image URL
-                          alt="Default"
-                          style={{
-                            height: "100px",
-                            width: "200px",
-                            objectFit: "cover",
-                          }}
-                        />
-                      )}
-                      {item.trending && item.trending.video3Url ? (
-                        <video
-                          controls
-                          style={{ height: "100px", width: "200px" }}
-                        >
-                          <source
-                            src={`http://localhost:2001/uploads/${item.trending.video3Url}`}
-                            type="video/mp4"
-                          />
-                          Your browser does not support the video tag.
-                        </video>
-                      ) : (
-                        <img
-                          src="https://via.placeholder.com/200x100.png?text=No+Video3+Available" // Default image URL
-                          alt="Default"
-                          style={{
-                            height: "100px",
-                            width: "200px",
-                            objectFit: "cover",
-                          }}
-                        />
-                      )}
-                      {item.trending && item.trending.video4Url ? (
-                        <video
-                          controls
-                          style={{ height: "100px", width: "200px" }}
-                        >
-                          <source
-                            src={`http://localhost:2001/uploads/${item.trending.video4Url}`}
-                            type="video/mp4"
-                          />
-                          Your browser does not support the video tag.
-                        </video>
-                      ) : (
-                        <img
-                          src="https://via.placeholder.com/200x100.png?text=No+Video4+Available" // Default image URL
-                          alt="Default"
-                          style={{
-                            height: "100px",
-                            width: "200px",
-                            objectFit: "cover",
-                          }}
-                        />
+                        renderMedia("", "No+VideoAvailable")
                       )}
                     </TableCell>
 
