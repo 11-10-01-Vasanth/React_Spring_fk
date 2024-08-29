@@ -364,3 +364,6 @@ export default function UpdateGames({ search }) {
     </>
   );
 }
+
+
+

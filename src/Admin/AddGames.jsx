@@ -439,90 +439,6 @@ export default function AddGames() {
             }}
           />
 
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <InputLabel id="os-label">Operating System</InputLabel>
-            <Select
-              labelId="os-label"
-              id="os"
-              value={os}
-              onChange={(e) => {
-                setOs(e.target.value);
-                handleUpdateRequirements();
-              }}
-              onBlur={formik.handleBlur}
-              label="Operating System"
-            >
-              {osOptions.map((option, index) => (
-                <MenuItem key={index} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <InputLabel id="cpu-label">CPU</InputLabel>
-            <Select
-              labelId="cpu-label"
-              id="cpu"
-              value={cpu}
-              onChange={(e) => {
-                setCpu(e.target.value);
-                handleUpdateRequirements();
-              }}
-              onBlur={formik.handleBlur}
-              label="CPU"
-            >
-              {cpuOptions.map((option, index) => (
-                <MenuItem key={index} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <InputLabel id="ram-label">RAM</InputLabel>
-            <Select
-              labelId="ram-label"
-              id="ram"
-              value={ram}
-              onChange={(e) => {
-                setRam(e.target.value);
-                handleUpdateRequirements();
-              }}
-              onBlur={formik.handleBlur}
-              label="RAM"
-            >
-              {ramOptions.map((option, index) => (
-                <MenuItem key={index} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <InputLabel id="gpu-label">GPU</InputLabel>
-            <Select
-              labelId="gpu-label"
-              id="gpu"
-              value={gpu}
-              onChange={(e) => {
-                setGpu(e.target.value);
-                handleUpdateRequirements();
-              }}
-              onBlur={formik.handleBlur}
-              label="GPU"
-            >
-              {gpuOptions.map((option, index) => (
-                <MenuItem key={index} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
           <TextField
             id="minsystemrequirements"
             name="minsystemrequirements"
@@ -539,6 +455,7 @@ export default function AddGames() {
               formik.touched.minsystemrequirements &&
               formik.errors.minsystemrequirements
             }
+            select // Add this prop to enable the select dropdown
             fullWidth
             InputProps={{
               startAdornment: (
@@ -547,91 +464,13 @@ export default function AddGames() {
                 </IconButton>
               ),
             }}
-          />
-
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <InputLabel id="os-label">Operating System</InputLabel>
-            <Select
-              labelId="os-label"
-              id="os"
-              value={ros}
-              onChange={(e) => {
-                setrOs(e.target.value);
-                handleRecUpdateRequirements();
-              }}
-              onBlur={formik.handleBlur}
-              label="Operating System"
-            >
-              {osOptions.map((option, index) => (
-                <MenuItem key={index} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <InputLabel id="cpu-label">CPU</InputLabel>
-            <Select
-              labelId="cpu-label"
-              id="cpu"
-              value={rcpu}
-              onChange={(e) => {
-                setrCpu(e.target.value);
-                handleRecUpdateRequirements();
-              }}
-              onBlur={formik.handleBlur}
-              label="CPU"
-            >
-              {cpuOptions.map((option, index) => (
-                <MenuItem key={index} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <InputLabel id="ram-label">RAM</InputLabel>
-            <Select
-              labelId="ram-label"
-              id="ram"
-              value={rram}
-              onChange={(e) => {
-                setrRam(e.target.value);
-                handleRecUpdateRequirements();
-              }}
-              onBlur={formik.handleBlur}
-              label="RAM"
-            >
-              {ramOptions.map((option, index) => (
-                <MenuItem key={index} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <InputLabel id="gpu-label">GPU</InputLabel>
-            <Select
-              labelId="gpu-label"
-              id="gpu"
-              value={rgpu}
-              onChange={(e) => {
-                setrGpu(e.target.value);
-                handleRecUpdateRequirements();
-              }}
-              onBlur={formik.handleBlur}
-              label="GPU"
-            >
-              {gpuOptions.map((option, index) => (
-                <MenuItem key={index} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          >
+            {/* Define MenuItem components as options */}
+            <MenuItem value="Windows 7 or higher">Windows 7 or higher</MenuItem>
+            <MenuItem value="8GB RAM, GTX 1050">8GB RAM, GTX 1050</MenuItem>
+            <MenuItem value="12GB RAM, RTX 2060">12GB RAM, RTX 2060</MenuItem>
+            <MenuItem value="16GB RAM, RTX 3070">16GB RAM, RTX 3070</MenuItem>
+          </TextField>
 
           <TextField
             id="recsystemrequirements"
@@ -649,6 +488,7 @@ export default function AddGames() {
               formik.touched.recsystemrequirements &&
               formik.errors.recsystemrequirements
             }
+            select // Add this prop to enable the select dropdown
             fullWidth
             InputProps={{
               startAdornment: (
@@ -657,7 +497,13 @@ export default function AddGames() {
                 </IconButton>
               ),
             }}
-          />
+          >
+            {/* Define MenuItem components as options */}
+            <MenuItem value="Windows 7 or higher">Windows 7 or higher</MenuItem>
+            <MenuItem value="8GB RAM, GTX 1050">8GB RAM, GTX 1050</MenuItem>
+            <MenuItem value="12GB RAM, RTX 2060">12GB RAM, RTX 2060</MenuItem>
+            <MenuItem value="16GB RAM, RTX 3070">16GB RAM, RTX 3070</MenuItem>
+          </TextField>
 
           <TextField
             id="gamegenres"
