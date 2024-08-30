@@ -43,7 +43,7 @@ const validationSchema = Yup.object({
   ),
   gamegenres: Yup.string().required("Game Genres Required"),
   gamerating: Yup.string().required("Game Rating Required"),
-  gametrailerurl: Yup.string()
+  gametrailer: Yup.string()
     .url("Invalid URL format")
     .required("Game Trailer URL Required"),
   gamefeatures: Yup.string().required("Game Features Required"),
@@ -66,33 +66,9 @@ const VisuallyHiddenInput = styled("input")`
   width: 1px;
 `;
 
-const osOptions = ["Windows 10", "Windows 11", "macOS", "Linux"];
-const cpuOptions = [
-  "Intel Core i7-4790",
-  "AMD Ryzen 5 3600",
-  "Intel Core i5-10600K",
-  "AMD Ryzen 7 5800X",
-];
-const ramOptions = ["8GB", "12GB", "16GB", "32GB"];
-const gpuOptions = [
-  "NVIDIA GeForce GTX 1060",
-  "AMD Radeon RX 590",
-  "NVIDIA GeForce RTX 2060",
-  "AMD Radeon RX 6600 XT",
-];
-
 export default function AddGames() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileError, setFileError] = useState(null);
-
-  const [os, setOs] = useState("");
-  const [cpu, setCpu] = useState("");
-  const [ram, setRam] = useState("");
-  const [gpu, setGpu] = useState("");
-  const [ros, setrOs] = useState("");
-  const [rcpu, setrCpu] = useState("");
-  const [rram, setrRam] = useState("");
-  const [rgpu, setrGpu] = useState("");
 
   const formik = useFormik({
     initialValues: {
@@ -109,7 +85,7 @@ export default function AddGames() {
       recsystemrequirements: "",
       gamegenres: "",
       gamerating: "",
-      gametrailerurl: "",
+      gametrailer: "",
       gamefeatures: "",
       supportedlanguages: "",
       gameachievements: "",
@@ -131,7 +107,7 @@ export default function AddGames() {
       formData.append("recsystemrequirements", values.recsystemrequirements);
       formData.append("gamegenres", values.gamegenres);
       formData.append("gamerating", values.gamerating);
-      formData.append("gametrailerurl", values.gametrailerurl);
+      formData.append("gametrailer", values.gametrailer);
       formData.append("gamefeatures", values.gamefeatures);
       formData.append("supportedlanguages", values.supportedlanguages);
       formData.append("gameachievements", values.gameachievements);
@@ -180,20 +156,6 @@ export default function AddGames() {
         });
     },
   });
-
-  const handleUpdateRequirements = () => {
-    formik.setFieldValue(
-      "minsystemrequirements",
-      `OS: ${os}, CPU: ${cpu}, RAM: ${ram}, GPU: ${gpu}`
-    );
-  };
-
-  const handleRecUpdateRequirements = () => {
-    formik.setFieldValue(
-      "recsystemrequirements",
-      `OS: ${ros}, CPU: ${rcpu}, RAM: ${rram}, GPU: ${rgpu}`
-    );
-  };
 
   const handleFileChange = (event) => {
     const file = event.currentTarget.files[0];
@@ -550,20 +512,17 @@ export default function AddGames() {
           />
 
           <TextField
-            id="gametrailerurl"
-            name="gametrailerurl"
+            id="gametrailer"
+            name="gametrailer"
             label="Game Trailer URL"
             variant="outlined"
-            value={formik.values.gametrailerurl}
+            value={formik.values.gametrailer}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={
-              formik.touched.gametrailerurl &&
-              Boolean(formik.errors.gametrailerurl)
+              formik.touched.gametrailer && Boolean(formik.errors.gametrailer)
             }
-            helperText={
-              formik.touched.gametrailerurl && formik.errors.gametrailerurl
-            }
+            helperText={formik.touched.gametrailer && formik.errors.gametrailer}
             fullWidth
             InputProps={{
               startAdornment: (

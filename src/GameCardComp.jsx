@@ -264,11 +264,34 @@ export default function GameCardComp() {
               >
                 <CardOverflow>
                   <AspectRatio sx={{ minWidth: 250 }}>
-                    <img
-                      src={`http://localhost:2001/uploads/${game.trending.video1Url}`}
-                      alt={game.gametitle}
-                      loading="lazy"
-                    />
+                    {/\.(mp4|webm|ogg|mov|avi|mkv|flv|wmv|mp3|wav|aac|m4a|flac|opus)$/i.test(
+                      game.trending.video1Url
+                    ) ? (
+                      <video
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                        src={`http://localhost:2001/uploads/${game.trending.video1Url}`}
+                        alt={game.gametitle}
+                      />
+                    ) : (
+                      <img
+                        src={`http://localhost:2001/uploads/${game.trending.video1Url}`}
+                        alt={game.gametitle}
+                        loading="lazy"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    )}
                   </AspectRatio>
                 </CardOverflow>
                 <CardContent
@@ -331,20 +354,6 @@ export default function GameCardComp() {
                   <Typography level="body-sm">
                     {game.gamedescription}
                   </Typography>
-
-                  {/* <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginTop: "1rem",
-                    }}
-                  >
-                    <ExploreIcon style={{ marginRight: "0.5rem" }} />
-                    <Typography level="body-md" fontWeight="md">
-                      
-                    </Typography>
-                    <GamingIcon style={{ marginLeft: "auto" }} />
-                  </div> */}
                 </CardContent>
 
                 <CardOverflow>

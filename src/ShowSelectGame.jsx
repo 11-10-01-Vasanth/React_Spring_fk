@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
@@ -10,6 +11,7 @@ import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/joy/Typography";
 
+// Styled Components
 const FullPageBackground = styled(Box)(({ imageUrl }) => ({
   position: "fixed",
   top: 0,
@@ -43,10 +45,44 @@ const OverlayText = styled(Box)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
 }));
 
+// Utility function to determine if the media is a video or image
+const isVideo = (url) => {
+  return url.match(/\.(mp4|webm|ogg)$/i);
+};
+
+// Media component to handle dynamic media rendering
+const MediaComponent = ({ url, alt, poster }) => {
+  return isVideo(url) ? (
+    <video
+      autoPlay
+      loop
+      muted
+      poster={poster}
+      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+    >
+      <source src={url} type="video/mp4" />
+    </video>
+  ) : (
+    <img
+      src={url}
+      alt={alt}
+      style={{
+        width: "100%",
+        objectFit: "cover",
+        borderRadius: "8px",
+        opacity: "0.9",
+      }}
+      loading="lazy"
+    />
+  );
+};
+
+// Main component
 export default function ShowSelectGame() {
   const [data, setData] = useState(null);
   const [username, setUsername] = useState(null);
 
+  // Fetch game details by ID
   const getGameById = async (id) => {
     try {
       const res = await axios.get(
@@ -82,25 +118,18 @@ export default function ShowSelectGame() {
             imageUrl={`http://localhost:2001/uploads/${data.trending.video1Url}`}
           />
 
-          {/* Video Playback */}
+          {/* Main Video Card */}
           <VideoCard>
             <CardCover>
-              <video
-                autoPlay
-                loop
-                muted
+              <MediaComponent
+                url={`http://localhost:2001/uploads/${data.trending.video4Url}`}
+                alt={data.gametitle}
                 poster={`http://localhost:2001/uploads/${data.trending.video4Url}`}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              >
-                <source
-                  src={`http://localhost:2001/uploads/${data.trending.video4Url}`}
-                  type="video/mp4"
-                />
-              </video>
+              />
             </CardCover>
             <OverlayText>
               <Typography fontWeight="bold" color="light">
-                <h2> {data.gametitle}</h2>
+                <h2>{data.gametitle}</h2>
               </Typography>
               <Typography variant="body1" paragraph color="light">
                 {data.gamedescription}
@@ -116,155 +145,68 @@ export default function ShowSelectGame() {
             </OverlayText>
           </VideoCard>
 
-          <div className="row mt-5" style={{ height: "50vh",backgroundColor: "rgba(0, 0, 0, 0.5)", }} >
-            <div className="col-lg-6 col-12 d-flex justify-content-center align-items-center mb-4 mb-lg-0 order-1 order-lg-2">
+          {/* Additional Game Information */}
+          {[data.trending.video2Url, data.trending.video3Url].map(
+            (url, index) => (
               <div
-                className="text-light"
+                key={index}
+                className="row mt-5"
                 style={{
-                  backgroundColor: "rgba(0, 0, 0, 0.5)", // Transparent black background
-                  padding: "20px", // Optional: Add padding for better appearance
-                  borderRadius: "8px", // Optional: Add rounded corners
+                  height: "50vh",
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
                 }}
               >
-                <h2
-                  style={{
-                    fontFamily: "'Open Sans', sans-serif",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {data.gametitle}
-                </h2>
-                <p>{data.gamefeatures}</p>
-              </div>
-            </div>
+                <div className="col-lg-6 col-12 d-flex justify-content-center align-items-center mb-4 mb-lg-0">
+                  <div
+                    className="text-light"
+                    style={{
+                      backgroundColor: "rgba(0, 0, 0, 0.5)",
+                      padding: "20px",
+                      borderRadius: "8px",
+                    }}
+                  >
+                    <h2
+                      style={{
+                        fontFamily: "'Open Sans', sans-serif",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {data.gametitle}
+                    </h2>
+                    <p>{data.gamefeatures}</p>
+                  </div>
+                </div>
 
-            <div className="col-lg-6 col-12 d-flex justify-content-center order-2 order-lg-1">
-              <Card sx={{ minHeight: "auto", width: "100%" }}>
-                <CardCover>
-                  <img
-                    src={`http://localhost:2001/uploads/${data.trending.video2Url}`}
-                    alt={data.gametitle}
-                    style={{
-                      width: "100%",
-                      objectFit: "cover",
-                      borderRadius: "8px", // Optional: adds rounded corners
-                      opacity: "0.9",
-                    }}
-                    loading="lazy"
-                  />
-                </CardCover>
-                <CardCover
-                  sx={{
-                    background:
-                      "linear-gradient(to top, rgba(0,0,0,0.4), rgba(0,0,0,0) 200px), linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0) 300px)",
-                  }}
-                />
-                <CardContent sx={{ justifyContent: "flex-end" }}>
-                  <Typography level="title-lg" textColor="#fff">
-                    {data.gamecategory}
-                  </Typography>
-                  <Typography
-                    startDecorator={<LocationOnRoundedIcon />}
-                    textColor="neutral.300"
-                  >
-                    {data.agerating}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-          <div className="row" style={{ height: "50vh",backgroundColor: "rgba(0, 0, 0, 0.5)", }}>
-            <div className="col-lg-6 col-12 d-flex justify-content-center align-items-center mb-4 mb-lg-0 order-2 order-lg-1">
-              <div className="text-light">
-                <h2
-                  style={{
-                    fontFamily: "'Open Sans', sans-serif",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {data.gametitle}
-                </h2>
-                <p>{data.gamefeatures}</p>
-              </div>
-            </div>
-            <div className="col-lg-6 col-12 d-flex justify-content-center order-1 order-lg-2">
-              <Card sx={{ minHeight: "auto", width: "100%" }}>
-                <CardCover>
-                  <img
-                    src={`http://localhost:2001/uploads/${data.trending.video3Url}`}
-                    alt={data.gametitle}
-                    style={{
-                      width: "100%",
-                      objectFit: "cover",
-                      borderRadius: "8px", // Optional: adds rounded corners
-                      opacity: "0.9",
-                    }}
-                    loading="lazy"
-                  />
-                </CardCover>
-                <CardCover
-                  sx={{
-                    background:
-                      "linear-gradient(to top, rgba(0,0,0,0.4), rgba(0,0,0,0) 200px), linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0) 300px)",
-                  }}
-                />
-                <CardContent sx={{ justifyContent: "flex-end" }}>
-                  <Typography level="title-lg" textColor="#fff">
-                    {data.gamecategory}
-                  </Typography>
-                  <Typography
-                    startDecorator={<LocationOnRoundedIcon />}
-                    textColor="neutral.300"
-                  >
-                    California, USA
-                  </Typography>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-          <div className="row" style={{ height: "50vh",backgroundColor: "rgba(0, 0, 0, 0.5)", }}>
-            <div className="col-lg-6 col-12 d-flex justify-content-center align-items-center mb-4 mb-lg-0 order-1 order-lg-2">
-              <div className="text-light">
-                <h2
-                  style={{
-                    fontFamily: "'Open Sans', sans-serif",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {data.gametitle}
-                </h2>
-                <p>{data.gamedescription}</p>
-              </div>
-            </div>
-            <div className="col-lg-6 col-12 d-flex justify-content-center order-2 order-lg-1">
-              <Card component="li" sx={{ minWidth: 300, flexGrow: 1 }}>
-                <CardCover>
-                  <video
-                    autoPlay
-                    loop
-                    muted
-                    poster="https://assets.codepen.io/6093409/river.jpg"
-                  >
-                    <source
-                      src={`http://localhost:2001/uploads/${data.trending.video4Url}`}
-                      type="video/mp4"
+                <div className="col-lg-6 col-12 d-flex justify-content-center">
+                  <Card sx={{ minHeight: "auto", width: "100%" }}>
+                    <CardCover>
+                      <MediaComponent
+                        url={`http://localhost:2001/uploads/${url}`}
+                        alt={data.gametitle}
+                      />
+                    </CardCover>
+                    <CardCover
+                      sx={{
+                        background:
+                          "linear-gradient(to top, rgba(0,0,0,0.4), rgba(0,0,0,0) 200px), linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0) 300px)",
+                      }}
                     />
-                  </video>
-                </CardCover>
-                <CardContent sx={{ justifyContent: "flex-end" }}>
-                  <Typography level="title-lg" textColor="#fff">
-                    {data.gamecategory}
-                  </Typography>
-                  <Typography
-                    startDecorator={<LocationOnRoundedIcon />}
-                    textColor="neutral.300"
-                  >
-                    California, USA
-                  </Typography>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+                    <CardContent sx={{ justifyContent: "flex-end" }}>
+                      <Typography level="title-lg" textColor="#fff">
+                        {data.gamecategory}
+                      </Typography>
+                      <Typography
+                        startDecorator={<LocationOnRoundedIcon />}
+                        textColor="neutral.300"
+                      >
+                        {data.agerating}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )
+          )}
         </Box>
       )}
     </>

@@ -28,32 +28,9 @@ const VisuallyHiddenInput = styled("input")`
   width: 1px;
 `;
 
-const osOptions = ["Windows 10", "Windows 11", "macOS", "Linux"];
-const cpuOptions = [
-  "Intel Core i7-4790",
-  "AMD Ryzen 5 3600",
-  "Intel Core i5-10600K",
-  "AMD Ryzen 7 5800X",
-];
-const ramOptions = ["8GB", "12GB", "16GB", "32GB"];
-const gpuOptions = [
-  "NVIDIA GeForce GTX 1060",
-  "AMD Radeon RX 590",
-  "NVIDIA GeForce RTX 2060",
-  "AMD Radeon RX 6600 XT",
-];
-
 export default function UpdateGameWithVideos() {
   const gameid = localStorage.getItem("gameid");
 
-  const [os, setOs] = useState("");
-  const [cpu, setCpu] = useState("");
-  const [ram, setRam] = useState("");
-  const [gpu, setGpu] = useState("");
-  const [ros, setrOs] = useState("");
-  const [rcpu, setrCpu] = useState("");
-  const [rram, setrRam] = useState("");
-  const [rgpu, setrGpu] = useState("");
   const [gameData, setGameData] = useState({
     gametitle: "",
     gamedescription: "",
@@ -68,7 +45,7 @@ export default function UpdateGameWithVideos() {
     recsystemrequirements: "",
     gamegenres: "",
     gamerating: "",
-    gametrailerurl: "",
+    gametrailer: "",
     gamefeatures: "",
     supportedlanguages: "",
     gameachievements: "",
@@ -78,6 +55,25 @@ export default function UpdateGameWithVideos() {
     video2Url: "",
     video3Url: "",
     video4Url: "",
+    gametrailer: "",
+    img_vid1: "",
+    img_vid2: "",
+    img_vid3: "",
+    img_vid4: "",
+    img_vid5: "",
+    img_vid6: "",
+    img_vid7: "",
+    img_vid8: "",
+    img_vid9: "",
+    img_vid10: "",
+    img_vid11: "",
+    img_vid12: "",
+    img_vid13: "",
+    img_vid14: "",
+    img_vid15: "",
+    img_vid16: "",
+    img_vid17: "",
+    img_vid18: "",
   });
   const [error, setError] = useState(null);
 
@@ -102,7 +98,7 @@ export default function UpdateGameWithVideos() {
               recsystemrequirements: data.recsystemrequirements || "",
               gamegenres: data.gamegenres || "",
               gamerating: data.gamerating || "",
-              gametrailerurl: data.gametrailerurl || "",
+              gametrailer: data.gametrailer || "",
               gamefeatures: data.gamefeatures || "",
               supportedlanguages: data.supportedlanguages || "",
               gameachievements: data.gameachievements || "",
@@ -112,6 +108,25 @@ export default function UpdateGameWithVideos() {
               video2Url: (data.trending && data.trending.video2Url) || "",
               video3Url: (data.trending && data.trending.video3Url) || "",
               video4Url: (data.trending && data.trending.video4Url) || "",
+              gametrailer: (data.trending && data.trending.gametrailer) || "",
+              img_vid1: (data.trending && data.trending.img_vid1) || "",
+              img_vid2: (data.trending && data.trending.img_vid2) || "",
+              img_vid3: (data.trending && data.trending.img_vid3) || "",
+              img_vid4: (data.trending && data.trending.img_vid4) || "",
+              img_vid5: (data.trending && data.trending.img_vid5) || "",
+              img_vid6: (data.trending && data.trending.img_vid6) || "",
+              img_vid7: (data.trending && data.trending.img_vid7) || "",
+              img_vid8: (data.trending && data.trending.img_vid8) || "",
+              img_vid9: (data.trending && data.trending.img_vid9) || "",
+              img_vid10: (data.trending && data.trending.img_vid10) || "",
+              img_vid11: (data.trending && data.trending.img_vid11) || "",
+              img_vid12: (data.trending && data.trending.img_vid12) || "",
+              img_vid13: (data.trending && data.trending.img_vid13) || "",
+              img_vid14: (data.trending && data.trending.img_vid14) || "",
+              img_vid15: (data.trending && data.trending.img_vid15) || "",
+              img_vid16: (data.trending && data.trending.img_vid16) || "",
+              img_vid17: (data.trending && data.trending.img_vid17) || "",
+              img_vid18: (data.trending && data.trending.img_vid18) || "",
             });
           } else {
             setError("Game data not found.");
@@ -125,20 +140,6 @@ export default function UpdateGameWithVideos() {
       setError("Game ID is not available.");
     }
   }, [gameid]);
-
-  const handleUpdateRequirements = () => {
-    formik.setFieldValue(
-      "minsystemrequirements",
-      `OS: ${os}, CPU: ${cpu}, RAM: ${ram}, GPU: ${gpu}`
-    );
-  };
-
-  const handleRecUpdateRequirements = () => {
-    formik.setFieldValue(
-      "recsystemrequirements",
-      `OS: ${ros}, CPU: ${rcpu}, RAM: ${rram}, GPU: ${rgpu}`
-    );
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -162,6 +163,27 @@ export default function UpdateGameWithVideos() {
     }));
   };
 
+  // Function to handle file upload or selection
+  const updateFile = (key) => (event) => {
+    const file = event.target.files[0]; // Get the selected file
+    if (file) {
+      // Update the game data with the selected file
+      setGameData((prevData) => ({
+        ...prevData,
+        [key]: file, // Store the file under the relevant key
+      }));
+    }
+  };
+
+  // Function to handle clearing or removing the file
+  const removeFile = (key) => () => {
+    // Clear the file from the game data
+    setGameData((prevData) => ({
+      ...prevData,
+      [key]: "", // Reset the key to an empty string
+    }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -178,7 +200,7 @@ export default function UpdateGameWithVideos() {
     formData.append("recsystemrequirements", gameData.recsystemrequirements);
     formData.append("gamegenres", gameData.gamegenres);
     formData.append("gamerating", gameData.gamerating);
-    formData.append("gametrailerurl", gameData.gametrailerurl);
+    formData.append("gametrailer", gameData.gametrailer);
     formData.append("gamefeatures", gameData.gamefeatures);
     formData.append("supportedlanguages", gameData.supportedlanguages);
     formData.append("gameachievements", gameData.gameachievements);
@@ -187,6 +209,31 @@ export default function UpdateGameWithVideos() {
       formData.append("gameimage", gameData.gameimage);
     }
     ["video1Url", "video2Url", "video3Url", "video4Url"].forEach((video) => {
+      if (gameData[video]) {
+        formData.append(video, gameData[video]);
+      }
+    });
+
+    [
+      "img_vid1",
+      "img_vid2",
+      "img_vid3",
+      "img_vid4",
+      "img_vid5",
+      "img_vid6",
+      "img_vid7",
+      "img_vid8",
+      "img_vid9",
+      "img_vid10",
+      "img_vid11",
+      "img_vid12",
+      "img_vid13",
+      "img_vid14",
+      "img_vid15",
+      "img_vid16",
+      "img_vid17",
+      "img_vid18",
+    ].forEach((video) => {
       if (gameData[video]) {
         formData.append(video, gameData[video]);
       }
@@ -437,12 +484,12 @@ export default function UpdateGameWithVideos() {
 
           <Grid item xs={12}>
             <TextField
-              id="gametrailerurl"
-              name="gametrailerurl"
+              id="gametrailer"
+              name="gametrailer"
               label="Game Trailer URL"
               variant="outlined"
               size="medium"
-              value={gameData.gametrailerurl}
+              value={gameData.gametrailer}
               onChange={handleChange}
               fullWidth
               InputProps={{
@@ -658,6 +705,94 @@ export default function UpdateGameWithVideos() {
                 <VisuallyHiddenInput
                   type="file"
                   onChange={handleFileChange(videoKey)}
+                  accept="video/mp4,audio/mp3"
+                  style={{ display: "none" }} // Hide the actual input element
+                  id={`upload-button-${index}`}
+                />
+                {/* Button to trigger the hidden file input */}
+              </Grid>
+            );
+          })}
+
+          {[
+            "Video/Img 1",
+            "Video/Img 2",
+            "Video/Img 3",
+            "Video/Img 4",
+            "Video/Img 5",
+            "Video/Img 6",
+            "Video/Img 7",
+            "Video/Img 8",
+            "Video/Img 9",
+            "Video/Img 10",
+            "Video/Img 11",
+            "Video/Img 12",
+            "Video/Img 13",
+            "Video/Img 14",
+            "Video/Img 15",
+            "Video/Img 16",
+            "Video/Img 17",
+            "Video/Img 18",
+          ].map((label, index) => {
+            const videoKey = `img_vid${index + 1}`; // Key for accessing the video/image in gameData
+            const videoData = gameData[videoKey]; // Access the relevant video/image data
+
+            // Function to get the displayed label or filename
+            const getFileName = () => {
+              if (typeof videoData === "string") {
+                return videoData.split("/").pop(); // Extract the file name from the URL string
+              } else if (videoData && videoData.name) {
+                return videoData.name; // Return the file name if it's a file object
+              }
+              return ""; // No file uploaded, return empty string
+            };
+
+            return (
+              <Grid item xs={12} key={index}>
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  value={getFileName()} // Display the file name or empty string
+                  placeholder={`Upload ${label}`}
+                  InputProps={{
+                    readOnly: true, // Make the input read-only
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PhotoRoundedIcon />
+                      </InputAdornment>
+                    ),
+                    endAdornment: videoData ? (
+                      <InputAdornment position="end">
+                        <IconButton
+                          color="inherit"
+                          onClick={removeFile(videoKey)} // Alternative name for clearing file
+                          aria-label="clear file"
+                        >
+                          <ClearIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                          component="label"
+                          htmlFor={`upload-button-${index}`} // Link button to the hidden input
+                        >
+                          <DriveFolderUploadIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    ) : (
+                      <InputAdornment position="end">
+                        <IconButton
+                          component="label"
+                          htmlFor={`upload-button-${index}`} // Link button to the hidden input
+                        >
+                          <DriveFolderUploadIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                {/* Hidden input field for uploading files */}
+                <VisuallyHiddenInput
+                  type="file"
+                  onChange={updateFile(videoKey)} // Alternative name for handling file upload
                   accept="video/mp4,audio/mp3"
                   style={{ display: "none" }} // Hide the actual input element
                   id={`upload-button-${index}`}

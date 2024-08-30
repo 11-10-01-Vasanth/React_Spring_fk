@@ -107,9 +107,6 @@ export default function UpdateGames({ search }) {
     }
   }
 
-  function video(id) {
-    console.log(id);
-  }
 
   function deleteGame(gameid) {
     return new Promise((resolve, reject) => {
