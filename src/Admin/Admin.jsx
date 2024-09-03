@@ -140,7 +140,7 @@ export default function MiniDrawer() {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [toSearch, setToSearch] = useState(""); // Corrected state name
-  const [selectedComponent, setSelectedComponent] = useState("add fresh game");
+  const [selectedComponent, setSelectedComponent] = useState("Add new game");
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -204,9 +204,9 @@ export default function MiniDrawer() {
         <List>
           {[
             {
-              text: "Add fresh game",
+              text: "Add new game",
               icon: <AddIcon />,
-              component: "add fresh game",
+              component: "Add new game",
             },
             {
               text: "Add trending",
@@ -253,7 +253,7 @@ export default function MiniDrawer() {
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Typography paragraph>
-          {selectedComponent === "add fresh game" && <AddGames />}
+          {selectedComponent === "Add new game" && <AddGames />}
           {selectedComponent === "add trending" && <AddTrendingVideoAdmin />}
           {selectedComponent === "edit" && <UpdateGames search={toSearch} />}
         </Typography>

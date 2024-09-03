@@ -10,6 +10,13 @@ import CardContent from "@mui/joy/CardContent";
 import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/joy/Typography";
+import ImportantDevicesIcon from "@mui/icons-material/ImportantDevices";
+import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import GamesOutlinedIcon from "@mui/icons-material/GamesOutlined";
+import SmartScreenOutlinedIcon from "@mui/icons-material/SmartScreenOutlined";
+import RotateRightIcon from "@mui/icons-material/RotateRight";
+import ImageList from "@mui/material/ImageList";
+import ImageListItem from "@mui/material/ImageListItem";
 
 // Styled Components
 const FullPageBackground = styled(Box)(({ imageUrl }) => ({
@@ -126,22 +133,21 @@ export default function ShowSelectGame() {
           {/* Main Video Card */}
           <VideoCard>
             <CardCover>
-              {data.trending &&
-                data.trending.video4Url && (
-                  <MediaComponent
-                    url={
-                      data.trending && data.trending.video4Url
-                        ? `http://localhost:2001/uploads/${data.trending.video4Url}`
-                        : "https://via.placeholder.com/800x600.png?text=No+Image"
-                    }
-                    alt={data.gametitle}
-                    poster={
-                      data.trending && data.trending.video4Url
-                        ? `http://localhost:2001/uploads/${data.trending.video4Url}`
-                        : "https://via.placeholder.com/800x600.png?text=No+Image"
-                    }
-                  />
-                )}
+              {data.trending && data.trending.video2Url && (
+                <MediaComponent
+                  url={
+                    data.trending && data.trending.video2Url
+                      ? `http://localhost:2001/uploads/${data.trending.video2Url}`
+                      : "https://via.placeholder.com/800x600.png?text=No+Image"
+                  }
+                  alt={data.gametitle}
+                  poster={
+                    data.trending && data.trending.video4Url
+                      ? `http://localhost:2001/uploads/${data.trending.video2Url}`
+                      : "https://via.placeholder.com/800x600.png?text=No+Image"
+                  }
+                />
+              )}
             </CardCover>
             <OverlayText>
               <Typography fontWeight="bold" color="light">
@@ -160,9 +166,11 @@ export default function ShowSelectGame() {
               </Button>
             </OverlayText>
           </VideoCard>
-          {/* Additional Game Information */}
-          {data.trending && [data.trending.img_vid1, data.trending.img_vid2, data.trending.img_vid3].map(
-            (url, index) => (
+
+          {/* {data.trending &&
+            [
+              data.trending.img_vid1,
+            ].map((url, index) => (
               <div
                 key={index}
                 className="row mt-5"
@@ -224,8 +232,115 @@ export default function ShowSelectGame() {
                   </Card>
                 </div>
               </div>
-            )
-          )}
+            ))} */}
+
+          <Box sx={{ mt: 4 }}>
+            <ImageList
+              sx={{ width: "100%", height: 500 }}
+              variant="woven"
+              cols={3}
+              gap={8}
+            >
+              {(data.trending.img_vid1 || []).map((url, index) => (
+                <ImageListItem key={index}>
+                  <img
+                    srcSet={`${url}?w=161&fit=crop&auto=format&dpr=2 2x`}
+                    src={`${url}?w=161&fit=crop&auto=format`}
+                    alt={data.gametitle || "Image"}
+                    loading="lazy"
+                  />
+                </ImageListItem>
+              ))}
+            </ImageList>
+          </Box>
+
+          <VideoCard className="mt-5">
+            <CardCover>
+              {data.trending && data.trending.video3Url && (
+                <MediaComponent
+                  url={
+                    data.trending.video3Url
+                      ? `http://localhost:2001/uploads/${data.trending.video3Url}`
+                      : "https://via.placeholder.com/800x600.png?text=No+Image"
+                  }
+                  alt={data.gametitle}
+                  poster={
+                    data.trending.video4Url
+                      ? `http://localhost:2001/uploads/${data.trending.video4Url}`
+                      : "https://via.placeholder.com/800x600.png?text=No+Image"
+                  }
+                />
+              )}
+            </CardCover>
+            <OverlayText>
+              <Typography
+                variant="h4"
+                component="h2"
+                fontWeight="bold"
+                color="light"
+              >
+                {data.gametitle}
+              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  flexWrap: "wrap",
+                  gap: 2,
+                  mt: 2,
+                }}
+              >
+                {data.gameplatforms.split(",").map((platform, index) => {
+                  // Define platform icons
+                  const platformIcons = {
+                    PC: ImportantDevicesIcon,
+                    "PlayStation 4": SportsEsportsIcon,
+                    "Xbox One": GamesOutlinedIcon,
+                    "Nintendo Switch": SmartScreenOutlinedIcon,
+                  };
+
+                  // Select the icon component or fallback
+                  const IconComponent =
+                    platformIcons[platform.trim()] || RotateRightIcon;
+
+                  return (
+                    <Box
+                      key={index}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        backgroundColor: "rgba(0, 0, 0, 0.3)",
+                        padding: 2, // Slightly increase padding for better spacing
+                        borderRadius: 2, // Increase border radius for a smoother look
+                        gap: 1, // Add spacing between elements
+                        color: "white", // Set text color for better contrast
+                      }}
+                    >
+                      Available On
+                      {platform}
+                      <IconComponent />
+                    </Box>
+                  );
+                })}
+              </Box>
+              <Typography
+                variant="body2"
+                color="light"
+                paragraph
+                sx={{ mt: 2 }}
+              >
+                {data.gamefeatures}
+              </Typography>
+              <Button
+                variant="outlined"
+                color="warning"
+                size="large"
+                sx={{ mt: 2 }}
+              >
+                Play Now
+              </Button>
+            </OverlayText>
+          </VideoCard>
         </Box>
       )}
     </>

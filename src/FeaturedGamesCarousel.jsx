@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import Carousel from "react-bootstrap/Carousel";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ArrowLeftSharpIcon from "@mui/icons-material/ArrowLeftSharp";
 import ArrowRightSharpIcon from "@mui/icons-material/ArrowRightSharp";
-import { Skeleton, Box } from "@mui/material";
+import { Skeleton } from "@mui/material";
+import "./FeaturedGamesCarousel.css"; // Import your CSS file
 
 export default function FeaturedGamesCarousel() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const videoRefs = useRef([]);
 
   const customIconStyle = {
     borderRadius: "50%",
@@ -43,6 +46,15 @@ export default function FeaturedGamesCarousel() {
     };
     fetchData();
   }, []);
+
+  const handlePlayPause = (index) => {
+    const video = videoRefs.current[index];
+    if (video.paused) {
+      video.play();
+    } else {
+      video.pause();
+    }
+  };
 
   if (loading) {
     return (
@@ -98,88 +110,47 @@ export default function FeaturedGamesCarousel() {
           <ArrowRightSharpIcon style={{ fontSize: "5rem" }} />
         </span>
       }
+      interval={5000}
+      pause={false}
     >
       {data.map((fg, index) => (
         <Carousel.Item key={index}>
-          {/\.(mp4|webm|ogg|mov|avi|mkv|flv|wmv)$/i.test(fg.trending.video1Url) ? (
-            <>
-              <div className="row">
-                <div className="col">
-                  <video
-                    className="d-block w-100"
-                    style={{
-                      height: "80vh",
-                      objectFit: "fill", // Adjust this to maintain pixel rate without cutting off edges
-                    }}
-                    controls
-                    autoPlay
-                    loop
-                    muted
-                  >
-                    <source
-                      src={`http://localhost:2001/uploads/${fg.trending.video1Url}`}
-                      type="video/mp4"
-                    />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-                <div className="col">
-                  <video
-                    className="d-block w-100"
-                    style={{
-                      height: "80vh",
-                      objectFit: "fill", // Adjust this to maintain pixel rate without cutting off edges
-                    }}
-                    controls
-                    autoPlay
-                    loop
-                    muted
-                  >
-                    <source
-                      src={`http://localhost:2001/uploads/${fg.trending.video2Url}`}
-                      type="video/mp4"
-                    />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-                <div className="col">
-                  <video
-                    className="d-block w-100"
-                    style={{
-                      height: "80vh",
-                      objectFit: "fill", // Adjust this to maintain pixel rate without cutting off edges
-                    }}
-                    controls
-                    autoPlay
-                    loop
-                    muted
-                  >
-                    <source
-                      src={`http://localhost:2001/uploads/${fg.trending.video3Url}`}
-                      type="video/mp4"
-                    />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
+          <div className="video-card">
+            {/\.(mp4|webm|ogg|mov|avi|mkv|flv|wmv)$/i.test(
+              fg.trending.video1Url
+            ) ? (
+              <div className="video-container">
+                <video
+                  className="video-content"
+                  ref={(el) => (videoRefs.current[index] = el)}
+                  autoPlay
+                  loop
+                  muted
+                  controls={false}
+                >
+                  <source
+                    src={`http://localhost:2001/uploads/${fg.trending.video1Url}`}
+                    type="video/mp4"
+                  />
+                  Your browser does not support the video tag.
+                </video>
               </div>
-            </>
-          ) : /\.(jpg|jpeg|png|gif|svg|bmp|tiff|webp)$/i.test(fg.gameimage) ? (
-            // Check if the gameimage is an image
-            <img
-              src={`http://localhost:2001/uploads/${fg.gameimage}`}
-              className="d-block w-100"
-              style={{
-                height: "80vh",
-                objectFit: "fill", // Ensures image covers without loss of quality
-              }}
-              alt={fg.gametitle}
-            />
-          ) : (
-            // Optional: Message for unsupported files
-            <p>Unsupported file type.</p>
-          )}
-
-          {/* Carousel Caption */}
+            ) : /\.(jpg|jpeg|png|gif|svg|bmp|tiff|webp)$/i.test(
+                fg.gameimage
+              ) ? (
+              <img
+                src={`http://localhost:2001/uploads/${fg.gameimage}`}
+                className="d-block w-100"
+                alt={fg.gametitle}
+                style={{
+                  height: "80vh",
+                  objectFit: "cover",
+                }}
+              />
+            ) : (
+              <p>Unsupported file type.</p>
+            )}
+          </div>
           <Carousel.Caption
             style={{
               bottom: "20px",
