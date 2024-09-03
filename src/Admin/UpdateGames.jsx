@@ -38,7 +38,7 @@ export default function UpdateGames({ search }) {
 
   const decodeUrl = (url) => {
     console.log(url.replace(/\+/g, " "));
-    
+
     return decodeURIComponent(url.replace(/\+/g, " "));
   };
 
@@ -106,7 +106,6 @@ export default function UpdateGames({ search }) {
       setLoading(false);
     }
   }
-
 
   function deleteGame(gameid) {
     return new Promise((resolve, reject) => {
@@ -287,9 +286,13 @@ export default function UpdateGames({ search }) {
                     <TableCell align="center">{item.gameprice}</TableCell>
                     <TableCell align="center">
                       <img
-                        src={`http://localhost:2001/uploads/${item.gameimage}`}
+                        src={
+                          item.gameimage
+                            ? `http://localhost:2001/uploads/${item.gameimage}`
+                            : "https://via.placeholder.com/200x100.png?text=No+Image"
+                        }
                         style={{ height: "100px", width: "200px" }}
-                        alt={item.gametitle}
+                        alt={item.gametitle || "Default title"}
                       />
                     </TableCell>
                     <TableCell align="center">
@@ -361,6 +364,3 @@ export default function UpdateGames({ search }) {
     </>
   );
 }
-
-
-

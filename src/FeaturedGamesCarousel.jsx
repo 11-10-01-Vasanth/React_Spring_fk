@@ -49,7 +49,12 @@ export default function FeaturedGamesCarousel() {
       <div>
         <Carousel>
           <Carousel.Item>
-            <Skeleton animation="wave" variant="rectangular" width="100%" height="80vh" />
+            <Skeleton
+              animation="wave"
+              variant="rectangular"
+              width="100%"
+              height="80vh"
+            />
             <Carousel.Caption
               style={{
                 bottom: "20px",
@@ -59,8 +64,18 @@ export default function FeaturedGamesCarousel() {
                 textAlign: "center",
               }}
             >
-              <Skeleton animation="wave" variant="text" width="60%" height={40} />
-              <Skeleton animation="wave" variant="text" width="80%" height={30} />
+              <Skeleton
+                animation="wave"
+                variant="text"
+                width="60%"
+                height={40}
+              />
+              <Skeleton
+                animation="wave"
+                variant="text"
+                width="80%"
+                height={30}
+              />
             </Carousel.Caption>
           </Carousel.Item>
         </Carousel>
@@ -86,12 +101,85 @@ export default function FeaturedGamesCarousel() {
     >
       {data.map((fg, index) => (
         <Carousel.Item key={index}>
-          <img
-            src={`http://localhost:2001/uploads/${fg.gameimage}`}
-            className="d-block w-100 img-fluid"
-            style={{ height: "80vh", width: "100%" }}
-            alt={fg.gametitle}
-          />
+          {/\.(mp4|webm|ogg|mov|avi|mkv|flv|wmv)$/i.test(fg.trending.video1Url) ? (
+            <>
+              <div className="row">
+                <div className="col">
+                  <video
+                    className="d-block w-100"
+                    style={{
+                      height: "80vh",
+                      objectFit: "fill", // Adjust this to maintain pixel rate without cutting off edges
+                    }}
+                    controls
+                    autoPlay
+                    loop
+                    muted
+                  >
+                    <source
+                      src={`http://localhost:2001/uploads/${fg.trending.video1Url}`}
+                      type="video/mp4"
+                    />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+                <div className="col">
+                  <video
+                    className="d-block w-100"
+                    style={{
+                      height: "80vh",
+                      objectFit: "fill", // Adjust this to maintain pixel rate without cutting off edges
+                    }}
+                    controls
+                    autoPlay
+                    loop
+                    muted
+                  >
+                    <source
+                      src={`http://localhost:2001/uploads/${fg.trending.video2Url}`}
+                      type="video/mp4"
+                    />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+                <div className="col">
+                  <video
+                    className="d-block w-100"
+                    style={{
+                      height: "80vh",
+                      objectFit: "fill", // Adjust this to maintain pixel rate without cutting off edges
+                    }}
+                    controls
+                    autoPlay
+                    loop
+                    muted
+                  >
+                    <source
+                      src={`http://localhost:2001/uploads/${fg.trending.video3Url}`}
+                      type="video/mp4"
+                    />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              </div>
+            </>
+          ) : /\.(jpg|jpeg|png|gif|svg|bmp|tiff|webp)$/i.test(fg.gameimage) ? (
+            // Check if the gameimage is an image
+            <img
+              src={`http://localhost:2001/uploads/${fg.gameimage}`}
+              className="d-block w-100"
+              style={{
+                height: "80vh",
+                objectFit: "fill", // Ensures image covers without loss of quality
+              }}
+              alt={fg.gametitle}
+            />
+          ) : (
+            // Optional: Message for unsupported files
+            <p>Unsupported file type.</p>
+          )}
+
+          {/* Carousel Caption */}
           <Carousel.Caption
             style={{
               bottom: "20px",

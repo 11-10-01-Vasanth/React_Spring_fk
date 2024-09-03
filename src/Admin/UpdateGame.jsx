@@ -45,7 +45,7 @@ export default function UpdateGameWithVideos() {
     recsystemrequirements: "",
     gamegenres: "",
     gamerating: "",
-    gametrailer: "",
+    gametrailerurl: "",
     gamefeatures: "",
     supportedlanguages: "",
     gameachievements: "",
@@ -55,7 +55,6 @@ export default function UpdateGameWithVideos() {
     video2Url: "",
     video3Url: "",
     video4Url: "",
-    gametrailer: "",
     img_vid1: "",
     img_vid2: "",
     img_vid3: "",
@@ -98,7 +97,7 @@ export default function UpdateGameWithVideos() {
               recsystemrequirements: data.recsystemrequirements || "",
               gamegenres: data.gamegenres || "",
               gamerating: data.gamerating || "",
-              gametrailer: data.gametrailer || "",
+              gametrailerurl: data.gametrailerurl || "",
               gamefeatures: data.gamefeatures || "",
               supportedlanguages: data.supportedlanguages || "",
               gameachievements: data.gameachievements || "",
@@ -108,7 +107,6 @@ export default function UpdateGameWithVideos() {
               video2Url: (data.trending && data.trending.video2Url) || "",
               video3Url: (data.trending && data.trending.video3Url) || "",
               video4Url: (data.trending && data.trending.video4Url) || "",
-              gametrailer: (data.trending && data.trending.gametrailer) || "",
               img_vid1: (data.trending && data.trending.img_vid1) || "",
               img_vid2: (data.trending && data.trending.img_vid2) || "",
               img_vid3: (data.trending && data.trending.img_vid3) || "",
@@ -200,7 +198,7 @@ export default function UpdateGameWithVideos() {
     formData.append("recsystemrequirements", gameData.recsystemrequirements);
     formData.append("gamegenres", gameData.gamegenres);
     formData.append("gamerating", gameData.gamerating);
-    formData.append("gametrailer", gameData.gametrailer);
+    formData.append("gametrailerurl", gameData.gametrailerurl);
     formData.append("gamefeatures", gameData.gamefeatures);
     formData.append("supportedlanguages", gameData.supportedlanguages);
     formData.append("gameachievements", gameData.gameachievements);
@@ -278,7 +276,7 @@ export default function UpdateGameWithVideos() {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
-              label="Title"
+              label="Game Title"
               name="gametitle"
               value={gameData.gametitle}
               onChange={handleChange}
@@ -484,12 +482,12 @@ export default function UpdateGameWithVideos() {
 
           <Grid item xs={12}>
             <TextField
-              id="gametrailer"
-              name="gametrailer"
+              id="gametrailerurl"
+              name="gametrailerurl"
               label="Game Trailer URL"
               variant="outlined"
               size="medium"
-              value={gameData.gametrailer}
+              value={gameData.gametrailerurl}
               onChange={handleChange}
               fullWidth
               InputProps={{
@@ -585,6 +583,7 @@ export default function UpdateGameWithVideos() {
           <Grid item xs={12}>
             <TextField
               variant="outlined"
+              label = "Game Main Image"
               fullWidth
               value={
                 typeof gameData.gameimage === "string"
@@ -663,9 +662,9 @@ export default function UpdateGameWithVideos() {
               <Grid item xs={12} key={index}>
                 <TextField
                   variant="outlined"
+                  label={`Game Trailer ${index+1}`}
                   fullWidth
                   value={getFileName()} // Display the file name or empty string
-                  placeholder={`Upload ${label}`}
                   InputProps={{
                     readOnly: true, // Make the input read-only
                     startAdornment: (
@@ -752,8 +751,8 @@ export default function UpdateGameWithVideos() {
                 <TextField
                   variant="outlined"
                   fullWidth
+                  label={`Image/Video ${index+1}`}
                   value={getFileName()} // Display the file name or empty string
-                  placeholder={`Upload ${label}`}
                   InputProps={{
                     readOnly: true, // Make the input read-only
                     startAdornment: (

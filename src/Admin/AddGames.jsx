@@ -43,7 +43,7 @@ const validationSchema = Yup.object({
   ),
   gamegenres: Yup.string().required("Game Genres Required"),
   gamerating: Yup.string().required("Game Rating Required"),
-  gametrailer: Yup.string()
+  gametrailerurl: Yup.string()
     .url("Invalid URL format")
     .required("Game Trailer URL Required"),
   gamefeatures: Yup.string().required("Game Features Required"),
@@ -85,7 +85,7 @@ export default function AddGames() {
       recsystemrequirements: "",
       gamegenres: "",
       gamerating: "",
-      gametrailer: "",
+      gametrailerurl: "",
       gamefeatures: "",
       supportedlanguages: "",
       gameachievements: "",
@@ -107,13 +107,14 @@ export default function AddGames() {
       formData.append("recsystemrequirements", values.recsystemrequirements);
       formData.append("gamegenres", values.gamegenres);
       formData.append("gamerating", values.gamerating);
-      formData.append("gametrailer", values.gametrailer);
+      formData.append("gametrailerurl", values.gametrailerurl);
       formData.append("gamefeatures", values.gamefeatures);
       formData.append("supportedlanguages", values.supportedlanguages);
       formData.append("gameachievements", values.gameachievements);
       formData.append("communitylinks", values.communitylinks);
       formData.append("gameimage", selectedFile);
-
+      console.log(values,selectedFile);
+      
       axios
         .post("http://localhost:2001/admin/addgames", formData, {
           headers: {
@@ -512,17 +513,17 @@ export default function AddGames() {
           />
 
           <TextField
-            id="gametrailer"
-            name="gametrailer"
+            id="gametrailerurl"
+            name="gametrailerurl"
             label="Game Trailer URL"
             variant="outlined"
-            value={formik.values.gametrailer}
+            value={formik.values.gametrailerurl}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={
-              formik.touched.gametrailer && Boolean(formik.errors.gametrailer)
+              formik.touched.gametrailerurl && Boolean(formik.errors.gametrailerurl)
             }
-            helperText={formik.touched.gametrailer && formik.errors.gametrailer}
+            helperText={formik.touched.gametrailerurl && formik.errors.gametrailerurl}
             fullWidth
             InputProps={{
               startAdornment: (

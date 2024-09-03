@@ -264,26 +264,14 @@ export default function GameCardComp() {
               >
                 <CardOverflow>
                   <AspectRatio sx={{ minWidth: 250 }}>
-                    {/\.(mp4|webm|ogg|mov|avi|mkv|flv|wmv|mp3|wav|aac|m4a|flac|opus)$/i.test(
-                      game.trending.video1Url
-                    ) ? (
-                      <video
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                        }}
-                        src={`http://localhost:2001/uploads/${game.trending.video1Url}`}
-                        alt={game.gametitle}
-                      />
-                    ) : (
+                    {game.gameimage && (
                       <img
-                        src={`http://localhost:2001/uploads/${game.trending.video1Url}`}
-                        alt={game.gametitle}
+                        src={
+                          game.gameimage
+                            ? `http://localhost:2001/uploads/${game.gameimage}`
+                            : "https://via.placeholder.com/800x600.png?text=No+Image"
+                        }
+                        alt={game.gametitle || "Default title"}
                         loading="lazy"
                         style={{
                           width: "100%",

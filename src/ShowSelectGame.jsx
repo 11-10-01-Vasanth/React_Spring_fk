@@ -114,18 +114,34 @@ export default function ShowSelectGame() {
           }}
         >
           {/* Full Page Background */}
+
           <FullPageBackground
-            imageUrl={`http://localhost:2001/uploads/${data.trending.video1Url}`}
+            imageUrl={
+              data.gameimage
+                ? `http://localhost:2001/uploads/${data.gameimage}`
+                : "https://via.placeholder.com/800x600.png?text=No+Image"
+            }
           />
 
           {/* Main Video Card */}
           <VideoCard>
             <CardCover>
-              <MediaComponent
-                url={`http://localhost:2001/uploads/${data.trending.video4Url}`}
-                alt={data.gametitle}
-                poster={`http://localhost:2001/uploads/${data.trending.video4Url}`}
-              />
+              {data.trending &&
+                data.trending.video4Url && (
+                  <MediaComponent
+                    url={
+                      data.trending && data.trending.video4Url
+                        ? `http://localhost:2001/uploads/${data.trending.video4Url}`
+                        : "https://via.placeholder.com/800x600.png?text=No+Image"
+                    }
+                    alt={data.gametitle}
+                    poster={
+                      data.trending && data.trending.video4Url
+                        ? `http://localhost:2001/uploads/${data.trending.video4Url}`
+                        : "https://via.placeholder.com/800x600.png?text=No+Image"
+                    }
+                  />
+                )}
             </CardCover>
             <OverlayText>
               <Typography fontWeight="bold" color="light">
@@ -144,9 +160,8 @@ export default function ShowSelectGame() {
               </Button>
             </OverlayText>
           </VideoCard>
-
           {/* Additional Game Information */}
-          {[data.trending.video2Url, data.trending.video3Url].map(
+          {data.trending && [data.trending.img_vid1, data.trending.img_vid2, data.trending.img_vid3].map(
             (url, index) => (
               <div
                 key={index}
@@ -181,8 +196,12 @@ export default function ShowSelectGame() {
                   <Card sx={{ minHeight: "auto", width: "100%" }}>
                     <CardCover>
                       <MediaComponent
-                        url={`http://localhost:2001/uploads/${url}`}
-                        alt={data.gametitle}
+                        url={
+                          url
+                            ? `http://localhost:2001/uploads/${url}`
+                            : "https://via.placeholder.com/800x600.png?text=No+Image"
+                        }
+                        alt={data.gametitle || "Default title"}
                       />
                     </CardCover>
                     <CardCover
