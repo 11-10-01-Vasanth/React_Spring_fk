@@ -99,7 +99,6 @@ function Login() {
             axios
               .post("http://localhost:2001/user/login", values)
               .then((response) => {
-                console.log(values.username);
                 setName(values.username);
                 setIsLoading(false);
                 setIsSubmitted(true);

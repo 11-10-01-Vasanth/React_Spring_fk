@@ -74,7 +74,6 @@ export default function GameCardComp() {
   function navigateGame(id, name) {
     navigate(`/games/${name}`);
     localStorage.setItem("gameid", id);
-    console.log(id);
   }
 
   function getAllGameCategory() {
@@ -358,3 +357,90 @@ export default function GameCardComp() {
     </>
   );
 }
+
+
+{/* {[
+            "Video/Img 1",
+            "Video/Img 2",
+            "Video/Img 3",
+            "Video/Img 4",
+            "Video/Img 5",
+            "Video/Img 6",
+            "Video/Img 7",
+            "Video/Img 8",
+            "Video/Img 9",
+            "Video/Img 10",
+            "Video/Img 11",
+            "Video/Img 12",
+            "Video/Img 13",
+            "Video/Img 14",
+            "Video/Img 15",
+            "Video/Img 16",
+            "Video/Img 17",
+            "Video/Img 18",
+          ].map((label, index) => {
+            const videoKey = `img_vid${index + 1}`; // Key for accessing the video/image in gameData
+            const videoData = gameData[videoKey]; // Access the relevant video/image data
+
+            // Function to get the displayed label or filename
+            const getFileName = () => {
+              if (typeof videoData === "string") {
+                return videoData.split("/").pop(); // Extract the file name from the URL string
+              } else if (videoData && videoData.name) {
+                return videoData.name; // Return the file name if it's a file object
+              }
+              return ""; // No file uploaded, return empty string
+            };
+
+            return (
+              <Grid item xs={12} key={index}>
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  label={`Image/Video ${index+1}`}
+                  value={getFileName()} // Display the file name or empty string
+                  InputProps={{
+                    readOnly: true, // Make the input read-only
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PhotoRoundedIcon />
+                      </InputAdornment>
+                    ),
+                    endAdornment: videoData ? (
+                      <InputAdornment position="end">
+                        <IconButton
+                          color="inherit"
+                          onClick={removeFile(videoKey)} // Alternative name for clearing file
+                          aria-label="clear file"
+                        >
+                          <ClearIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                          component="label"
+                          htmlFor={`upload-button-${index}`} // Link button to the hidden input
+                        >
+                          <DriveFolderUploadIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    ) : (
+                      <InputAdornment position="end">
+                        <IconButton
+                          component="label"
+                          htmlFor={`upload-button-${index}`} // Link button to the hidden input
+                        >
+                          <DriveFolderUploadIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <VisuallyHiddenInput
+                  type="file"
+                  onChange={updateFile(videoKey)} // Alternative name for handling file upload
+                  accept="video/mp4,audio/mp3"
+                  style={{ display: "none" }} // Hide the actual input element
+                  id={`upload-button-${index}`}
+                />
+              </Grid>
+            );
+          })} */}

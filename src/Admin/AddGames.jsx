@@ -113,7 +113,6 @@ export default function AddGames() {
       formData.append("gameachievements", values.gameachievements);
       formData.append("communitylinks", values.communitylinks);
       formData.append("gameimage", selectedFile);
-      console.log(values,selectedFile);
       
       axios
         .post("http://localhost:2001/admin/addgames", formData, {

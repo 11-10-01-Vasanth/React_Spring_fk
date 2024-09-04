@@ -148,6 +148,8 @@ export default function UpdateGameWithVideos() {
   };
 
   const handleFileChange = (field) => (e) => {
+    console.log(field);
+    
     setGameData((prevData) => ({
       ...prevData,
       [field]: e.target.files[0],
@@ -161,17 +163,6 @@ export default function UpdateGameWithVideos() {
     }));
   };
 
-  // Function to handle file upload or selection
-  const updateFile = (key) => (event) => {
-    const file = event.target.files[0]; // Get the selected file
-    if (file) {
-      // Update the game data with the selected file
-      setGameData((prevData) => ({
-        ...prevData,
-        [key]: file, // Store the file under the relevant key
-      }));
-    }
-  };
 
   // Function to handle clearing or removing the file
   const removeFile = (key) => () => {
@@ -583,7 +574,7 @@ export default function UpdateGameWithVideos() {
           <Grid item xs={12}>
             <TextField
               variant="outlined"
-              label = "Game Main Image"
+              label="Game Main Image"
               fullWidth
               value={
                 typeof gameData.gameimage === "string"
@@ -662,7 +653,7 @@ export default function UpdateGameWithVideos() {
               <Grid item xs={12} key={index}>
                 <TextField
                   variant="outlined"
-                  label={`Game Trailer ${index+1}`}
+                  label={`Game Trailer ${index + 1}`}
                   fullWidth
                   value={getFileName()} // Display the file name or empty string
                   InputProps={{
@@ -751,7 +742,7 @@ export default function UpdateGameWithVideos() {
                 <TextField
                   variant="outlined"
                   fullWidth
-                  label={`Image/Video ${index+1}`}
+                  label={`Image/Video ${index + 1}`}
                   value={getFileName()} // Display the file name or empty string
                   InputProps={{
                     readOnly: true, // Make the input read-only
@@ -788,15 +779,13 @@ export default function UpdateGameWithVideos() {
                     ),
                   }}
                 />
-                {/* Hidden input field for uploading files */}
                 <VisuallyHiddenInput
                   type="file"
-                  onChange={updateFile(videoKey)} // Alternative name for handling file upload
+                  onChange={handleFileChange(videoKey)}
                   accept="video/mp4,audio/mp3"
                   style={{ display: "none" }} // Hide the actual input element
                   id={`upload-button-${index}`}
                 />
-                {/* Button to trigger the hidden file input */}
               </Grid>
             );
           })}

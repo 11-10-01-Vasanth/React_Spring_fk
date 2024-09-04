@@ -37,8 +37,6 @@ export default function UpdateGames({ search }) {
   const [showtable, setshowTable] = useState(true);
 
   const decodeUrl = (url) => {
-    console.log(url.replace(/\+/g, " "));
-
     return decodeURIComponent(url.replace(/\+/g, " "));
   };
 
@@ -77,7 +75,6 @@ export default function UpdateGames({ search }) {
   const handleChange = (event, value) => {
     setPage(value);
     // eslint-disable-next-line react/prop-types
-    console.log(search);
   };
 
   useEffect(() => {

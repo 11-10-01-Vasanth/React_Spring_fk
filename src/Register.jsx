@@ -103,7 +103,6 @@ function Register() {
             axios
               .post("http://localhost:2001/user/register", values)
               .then((response) => {
-                console.log(response.data);
                 setIsLoading(false);
                 setIsSubmitted(true);
                 if (typeof response?.data === "string") {
