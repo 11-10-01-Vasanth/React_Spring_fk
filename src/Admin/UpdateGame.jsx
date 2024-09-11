@@ -148,12 +148,11 @@ export default function UpdateGameWithVideos() {
   };
 
   const handleFileChange = (field) => (e) => {
-    console.log(field);
-    
     setGameData((prevData) => ({
       ...prevData,
       [field]: e.target.files[0],
     }));
+    console.log([field], e.target.files[0]);
   };
 
   const handleClearFile = (field) => () => {
@@ -162,7 +161,6 @@ export default function UpdateGameWithVideos() {
       [field]: null,
     }));
   };
-
 
   // Function to handle clearing or removing the file
   const removeFile = (key) => () => {
@@ -176,57 +174,55 @@ export default function UpdateGameWithVideos() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("gametitle", gameData.gametitle);
-    formData.append("gamecategory", gameData.gamecategory);
-    formData.append("gamedescription", gameData.gamedescription);
-    formData.append("gameprice", gameData.gameprice);
-    formData.append("gamediscount", gameData.gamediscount);
-    formData.append("agerating", gameData.agerating);
-    formData.append("releasedate", gameData.releasedate);
-    formData.append("gamepublisher", gameData.gamepublisher);
-    formData.append("gameplatforms", gameData.gameplatforms);
-    formData.append("minsystemrequirements", gameData.minsystemrequirements);
-    formData.append("recsystemrequirements", gameData.recsystemrequirements);
-    formData.append("gamegenres", gameData.gamegenres);
-    formData.append("gamerating", gameData.gamerating);
-    formData.append("gametrailerurl", gameData.gametrailerurl);
-    formData.append("gamefeatures", gameData.gamefeatures);
-    formData.append("supportedlanguages", gameData.supportedlanguages);
-    formData.append("gameachievements", gameData.gameachievements);
-    formData.append("communitylinks", gameData.communitylinks);
+
+    // Append game fields
+    const fields = [
+      "gametitle",
+      "gamecategory",
+      "gamedescription",
+      "gameprice",
+      "gamediscount",
+      "agerating",
+      "releasedate",
+      "gamepublisher",
+      "gameplatforms",
+      "minsystemrequirements",
+      "recsystemrequirements",
+      "gamegenres",
+      "gamerating",
+      "gametrailerurl",
+      "gamefeatures",
+      "supportedlanguages",
+      "gameachievements",
+      "communitylinks",
+    ];
+
+    fields.forEach((field) => {
+      if (gameData[field]) {
+        formData.append(field, gameData[field]);
+      }
+    });
+
+    // Append image if available
     if (gameData.gameimage) {
       formData.append("gameimage", gameData.gameimage);
     }
+
+    // Append video URLs
     ["video1Url", "video2Url", "video3Url", "video4Url"].forEach((video) => {
       if (gameData[video]) {
         formData.append(video, gameData[video]);
       }
     });
 
-    [
-      "img_vid1",
-      "img_vid2",
-      "img_vid3",
-      "img_vid4",
-      "img_vid5",
-      "img_vid6",
-      "img_vid7",
-      "img_vid8",
-      "img_vid9",
-      "img_vid10",
-      "img_vid11",
-      "img_vid12",
-      "img_vid13",
-      "img_vid14",
-      "img_vid15",
-      "img_vid16",
-      "img_vid17",
-      "img_vid18",
-    ].forEach((video) => {
-      if (gameData[video]) {
-        formData.append(video, gameData[video]);
+    // Append image video URLs
+    Array.from({ length: 18 }, (_, i) => `img_vid${i + 1}`).forEach(
+      (imgVid) => {
+        if (gameData[imgVid]) {
+          formData.append(imgVid, gameData[imgVid]);
+        }
       }
-    });
+    );
 
     axios
       .put(`http://localhost:2001/admin/updategames/${gameid}`, formData)
@@ -580,10 +576,10 @@ export default function UpdateGameWithVideos() {
                 typeof gameData.gameimage === "string"
                   ? gameData.gameimage.split("_").pop() // Display file name from the string
                   : gameData.gameimage?.name || "Upload Game Image"
-              } // Display file name or placeholder
+              }
               placeholder="Upload Game Image"
               InputProps={{
-                readOnly: true, // Make the input read-only
+                readOnly: true,
                 startAdornment: (
                   <InputAdornment position="start">
                     <PhotoRoundedIcon />
@@ -601,7 +597,7 @@ export default function UpdateGameWithVideos() {
                     <InputAdornment position="end">
                       <IconButton
                         component="label"
-                        htmlFor={`upload-button`} // Link button to the hidden input
+                        htmlFor={`upload-game-main-image`} // Unique ID for main image upload
                       >
                         <DriveFolderUploadIcon />
                       </IconButton>
@@ -611,7 +607,7 @@ export default function UpdateGameWithVideos() {
                   <InputAdornment position="end">
                     <IconButton
                       component="label"
-                      htmlFor={`upload-button`} // Link button to the hidden input
+                      htmlFor={`upload-game-main-image`} // Unique ID for main image upload
                     >
                       <DriveFolderUploadIcon />
                     </IconButton>
@@ -624,10 +620,9 @@ export default function UpdateGameWithVideos() {
               type="file"
               onChange={handleFileChange("gameimage")}
               accept="image/*"
-              style={{ display: "none" }} // Hide the actual input element
-              id={`upload-button`}
+              style={{ display: "none" }}
+              id={`upload-game-main-image`} // Unique ID for main image upload
             />
-            {/* Button to trigger the hidden file input */}
           </Grid>
 
           {[
@@ -636,28 +631,27 @@ export default function UpdateGameWithVideos() {
             "Video/Image 3",
             "Video/Image 4",
           ].map((label, index) => {
-            const videoKey = `video${index + 1}Url`; // Key for accessing the video/image in gameData
-            const videoData = gameData[videoKey]; // Access the relevant video/image data
+            const videoKey = `video${index + 1}Url`;
+            const videoData = gameData[videoKey];
 
-            // Function to get the displayed label or filename
             const getFileName = () => {
               if (typeof videoData === "string") {
-                return videoData.split("/").pop(); // Extract the file name from the URL string
+                return videoData.split("/").pop();
               } else if (videoData && videoData.name) {
-                return videoData.name; // Return the file name if it's a file object
+                return videoData.name;
               }
-              return ""; // No file uploaded, return empty string
+              return "";
             };
 
             return (
-              <Grid item xs={12} key={index}>
+              <Grid item xs={12} key={`video-section-${index}`}>
                 <TextField
                   variant="outlined"
                   label={`Game Trailer ${index + 1}`}
                   fullWidth
-                  value={getFileName()} // Display the file name or empty string
+                  value={getFileName()}
                   InputProps={{
-                    readOnly: true, // Make the input read-only
+                    readOnly: true,
                     startAdornment: (
                       <InputAdornment position="start">
                         <PhotoRoundedIcon />
@@ -674,7 +668,7 @@ export default function UpdateGameWithVideos() {
                         </IconButton>
                         <IconButton
                           component="label"
-                          htmlFor={`upload-button-${index}`} // Link button to the hidden input
+                          htmlFor={`upload-button-video-${index}`} // Unique ID for video section
                         >
                           <DriveFolderUploadIcon />
                         </IconButton>
@@ -683,7 +677,7 @@ export default function UpdateGameWithVideos() {
                       <InputAdornment position="end">
                         <IconButton
                           component="label"
-                          htmlFor={`upload-button-${index}`} // Link button to the hidden input
+                          htmlFor={`upload-button-video-${index}`} // Unique ID for video section
                         >
                           <DriveFolderUploadIcon />
                         </IconButton>
@@ -691,15 +685,13 @@ export default function UpdateGameWithVideos() {
                     ),
                   }}
                 />
-                {/* Hidden input field for uploading files */}
                 <VisuallyHiddenInput
                   type="file"
                   onChange={handleFileChange(videoKey)}
                   accept="video/mp4,audio/mp3"
-                  style={{ display: "none" }} // Hide the actual input element
-                  id={`upload-button-${index}`}
+                  style={{ display: "none" }}
+                  id={`upload-button-video-${index}`} // Unique ID for video section
                 />
-                {/* Button to trigger the hidden file input */}
               </Grid>
             );
           })}
@@ -724,28 +716,27 @@ export default function UpdateGameWithVideos() {
             "Video/Img 17",
             "Video/Img 18",
           ].map((label, index) => {
-            const videoKey = `img_vid${index + 1}`; // Key for accessing the video/image in gameData
-            const videoData = gameData[videoKey]; // Access the relevant video/image data
+            const videoKey = `img_vid${index + 1}`;
+            const videoData = gameData[videoKey];
 
-            // Function to get the displayed label or filename
             const getFileName = () => {
               if (typeof videoData === "string") {
-                return videoData.split("/").pop(); // Extract the file name from the URL string
+                return videoData.split("/").pop();
               } else if (videoData && videoData.name) {
-                return videoData.name; // Return the file name if it's a file object
+                return videoData.name;
               }
-              return ""; // No file uploaded, return empty string
+              return "";
             };
 
             return (
-              <Grid item xs={12} key={index}>
+              <Grid item xs={12} key={`image-video-section-${index}`}>
                 <TextField
                   variant="outlined"
                   fullWidth
                   label={`Image/Video ${index + 1}`}
-                  value={getFileName()} // Display the file name or empty string
+                  value={getFileName()}
                   InputProps={{
-                    readOnly: true, // Make the input read-only
+                    readOnly: true,
                     startAdornment: (
                       <InputAdornment position="start">
                         <PhotoRoundedIcon />
@@ -755,14 +746,14 @@ export default function UpdateGameWithVideos() {
                       <InputAdornment position="end">
                         <IconButton
                           color="inherit"
-                          onClick={removeFile(videoKey)} // Alternative name for clearing file
+                          onClick={removeFile(videoKey)}
                           aria-label="clear file"
                         >
                           <ClearIcon fontSize="small" />
                         </IconButton>
                         <IconButton
                           component="label"
-                          htmlFor={`upload-button-${index}`} // Link button to the hidden input
+                          htmlFor={`upload-button-image-video-${index}`} // Unique ID for image/video section
                         >
                           <DriveFolderUploadIcon />
                         </IconButton>
@@ -771,7 +762,7 @@ export default function UpdateGameWithVideos() {
                       <InputAdornment position="end">
                         <IconButton
                           component="label"
-                          htmlFor={`upload-button-${index}`} // Link button to the hidden input
+                          htmlFor={`upload-button-image-video-${index}`} // Unique ID for image/video section
                         >
                           <DriveFolderUploadIcon />
                         </IconButton>
@@ -783,8 +774,8 @@ export default function UpdateGameWithVideos() {
                   type="file"
                   onChange={handleFileChange(videoKey)}
                   accept="video/mp4,audio/mp3"
-                  style={{ display: "none" }} // Hide the actual input element
-                  id={`upload-button-${index}`}
+                  style={{ display: "none" }}
+                  id={`upload-button-image-video-${index}`} // Unique ID for image/video section
                 />
               </Grid>
             );
