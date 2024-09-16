@@ -1,170 +1,286 @@
-import * as React from "react";
-import { useState } from "react";
-import { styled, useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import MuiDrawer from "@mui/material/Drawer";
-import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import List from "@mui/material/List";
-import CssBaseline from "@mui/material/CssBaseline";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Button from "@mui/material/Button";
-import AddGames from "./AddGames";
-import AddBoxIcon from "@mui/icons-material/AddBox";
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import Navbar from "./Navbar";
+import { Box } from "@mui/material";
+import Button from "@mui/joy/Button";
+import Card from "@mui/joy/Card";
+import CardCover from "@mui/joy/CardCover";
+import { styled } from "@mui/material/styles";
+import Typography from "@mui/joy/Typography";
+import ImportantDevicesIcon from "@mui/icons-material/ImportantDevices";
+import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import GamesOutlinedIcon from "@mui/icons-material/GamesOutlined";
+import SmartScreenOutlinedIcon from "@mui/icons-material/SmartScreenOutlined";
+import RotateRightIcon from "@mui/icons-material/RotateRight";
 
-const drawerWidth = 240;
-
-const openedMixin = (theme) => ({
-  width: drawerWidth,
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: "hidden",
-});
-
-const closedMixin = (theme) => ({
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  overflowX: "hidden",
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
-  },
-});
-
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "flex-end",
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
+// Styled Components
+const FullPageBackground = styled(Box)(({ imageUrl }) => ({
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  background: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${imageUrl}) center/cover no-repeat`,
+  zIndex: -1,
 }));
 
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(["width", "margin"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
+const VideoCard = styled(Card)(({ theme }) => ({
+  position: "relative",
+  minWidth: 300,
+  height: "70vh",
+  overflow: "hidden",
+  backgroundColor: theme.palette.background.paper,
 }));
 
-const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  width: drawerWidth,
-  flexShrink: 0,
-  whiteSpace: "nowrap",
-  boxSizing: "border-box",
-  ...(open && {
-    ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
-  }),
-  ...(!open && {
-    ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
-  }),
+const OverlayText = styled(Box)(({ theme }) => ({
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  color: theme.palette.common.white,
+  textAlign: "center",
+  width: "100%",
+  zIndex: 1,
+  background: "rgba(0, 0, 0, 0.6)",
+  padding: theme.spacing(3),
+  borderRadius: theme.shape.borderRadius,
 }));
 
-export default function MiniDrawer() {
-  const theme = useTheme();
-  const [open, setOpen] = useState(false);
+const VideoCard1 = styled(Card)(({ theme }) => ({
+  position: "relative",
+  minWidth: 300,
+  height: "70vh",
+  overflow: "hidden",
+  backgroundColor: "#1a1c20", // Dark, sleek background
+  boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.7)", // Subtle shadow for depth
+  border: "1px solid #e1e1e1", // Light metallic border
+  borderRadius: "10px",
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+}));
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
+const OverlayText1 = styled(Box)(({ theme }) => ({
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  color: "#ffffff", // Clean white text color
+  textAlign: "center",
+  width: "90%",
+  zIndex: 1,
+  background: "rgba(0, 0, 0, 0.5)", // Semi-transparent overlay for better text contrast
+  padding: theme.spacing(3),
+  borderRadius: "8px",
+  fontSize: "1.1rem",
+  fontFamily: "'Oswald', sans-serif", // Bold and modern font for impact
+  textShadow: "0 2px 4px rgba(0, 0, 0, 0.6)",
+}));
+
+// Utility function to determine if the media is a video or image
+const isVideo = (url) => {
+  return url.match(/\.(mp4|webm|ogg)$/i);
+};
+
+// Media component to handle dynamic media rendering
+const MediaComponent = ({ url, alt, poster }) => {
+  return isVideo(url) ? (
+    <video
+      autoPlay
+      loop
+      muted
+      poster={poster}
+      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+    >
+      <source src={url} type="video/mp4" />
+    </video>
+  ) : (
+    <img
+      src={url}
+      alt={alt}
+      style={{
+        width: "100%",
+        objectFit: "cover",
+        borderRadius: "8px",
+        opacity: "0.9",
+      }}
+      loading="lazy"
+    />
+  );
+};
+
+// Main component
+export default function ShowSelectGame() {
+  const [data, setData] = useState(null);
+  const [username, setUsername] = useState(null);
+
+  // Fetch game details by ID
+  const getGameById = async (id) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:2001/admin/getGameById/${id}`
+      );
+      setData(res.data[0]);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  useEffect(() => {
+    const gameid = localStorage.getItem("gameid");
+    const name = localStorage.getItem("username");
+    setUsername(name);
+    if (gameid) getGameById(gameid);
+  }, []);
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <AppBar position="fixed" open={open}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              ...(open && { display: "none" }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Admin
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Drawer variant="permanent" open={open}>
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-          <ListItem disablePadding sx={{ display: "block" }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? "initial" : "center",
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
+    <>
+      <Navbar name={username} />
+      {data && (
+        <Box
+          sx={{
+            minHeight: "100vh",
+            padding: 2,
+            color: "#fff",
+            position: "relative",
+          }}
+        >
+          {/* Full Page Background */}
+
+          <FullPageBackground
+            imageUrl={
+              data.gameimage
+                ? `http://localhost:2001/uploads/${data.gameimage}`
+                : "https://via.placeholder.com/800x600.png?text=No+Image"
+            }
+          />
+
+          {/* Main Video Card */}
+          <VideoCard>
+            <CardCover>
+              {data.trending && data.trending.video2Url && (
+                <MediaComponent
+                  url={
+                    data.trending && data.trending.video2Url
+                      ? `http://localhost:2001/uploads/${data.trending.video2Url}`
+                      : "https://via.placeholder.com/800x600.png?text=No+Image"
+                  }
+                  alt={data.gametitle}
+                  poster={
+                    data.trending && data.trending.video4Url
+                      ? `http://localhost:2001/uploads/${data.trending.video2Url}`
+                      : "https://via.placeholder.com/800x600.png?text=No+Image"
+                  }
+                />
+              )}
+            </CardCover>
+            <OverlayText>
+              <Typography fontWeight="bold" color="light">
+                <h2>{data.gametitle}</h2>
+              </Typography>
+              <Typography variant="body1" paragraph color="light">
+                {data.gamedescription}
+              </Typography>
+              <Button
+                variant="outlined"
+                color="warning"
+                size="lg"
+                sx={{ mt: 2 }}
+              >
+                Order Now
+              </Button>
+            </OverlayText>
+          </VideoCard>
+
+          <VideoCard1 className="mt-5">
+            <CardCover>
+              {data.trending && data.trending.video3Url && (
+                <MediaComponent
+                  url={
+                    data.trending.video3Url
+                      ? `http://localhost:2001/uploads/${data.trending.video3Url}`
+                      : "https://via.placeholder.com/800x600.png?text=No+Image"
+                  }
+                  alt={data.gametitle}
+                  poster={
+                    data.trending.video4Url
+                      ? `http://localhost:2001/uploads/${data.trending.video3Url}`
+                      : "https://via.placeholder.com/800x600.png?text=No+Image"
+                  }
+                />
+              )}
+            </CardCover>
+            <OverlayText1>
+              <Typography
+                variant="h4"
+                component="h2"
+                fontWeight="bold"
+                color="light"
+              >
+                {data.gametitle}
+              </Typography>
+              <Box
                 sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : "auto",
+                  display: "flex",
                   justifyContent: "center",
+                  flexWrap: "wrap",
+                  gap: 2,
+                  mt: 2,
                 }}
               >
-                <Button variant="contained" endIcon={<AddBoxIcon />}>
-                  Add
-                </Button>
-              </ListItemIcon>
-              <ListItemText sx={{ opacity: open ? 1 : 0 }} />
-            </ListItemButton>
-          </ListItem>
-        </List>
-        <Divider />
-      </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
-        <Typography paragraph>
-          <AddGames></AddGames>
-        </Typography>
-      </Box>
-    </Box>
+                {data.gameplatforms.split(",").map((platform, index) => {
+                  // Define platform icons
+                  const platformIcons = {
+                    PC: ImportantDevicesIcon,
+                    "PlayStation 4": SportsEsportsIcon,
+                    "Xbox One": GamesOutlinedIcon,
+                    "Nintendo Switch": SmartScreenOutlinedIcon,
+                  };
+
+                  // Select the icon component or fallback
+                  const IconComponent =
+                    platformIcons[platform.trim()] || RotateRightIcon;
+
+                  return (
+                    <Box
+                      key={index}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        backgroundColor: "rgba(0, 0, 0, 0.3)",
+                        padding: 2, // Slightly increase padding for better spacing
+                        borderRadius: 2, // Increase border radius for a smoother look
+                        gap: 1, // Add spacing between elements
+                        color: "white", // Set text color for better contrast
+                      }}
+                    >
+                      {platform}
+                      <IconComponent />
+                    </Box>
+                  );
+                })}
+              </Box>
+              <Typography
+                variant="body2"
+                color="light"
+                paragraph
+                sx={{ mt: 2 }}
+              >
+                {data.gamefeatures}
+              </Typography>
+              <Button
+                variant="outlined"
+                color="warning"
+                size="large"
+                sx={{ mt: 2 }}
+              >
+                Play Now
+              </Button>
+            </OverlayText1>
+          </VideoCard1>
+        </Box>
+      )}
+    </>
   );
 }

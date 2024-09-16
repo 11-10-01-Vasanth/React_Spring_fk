@@ -3,118 +3,46 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
-import { Box } from "@mui/material";
+import Skeleton from "@mui/material/Skeleton";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/joy/Box";
+import YouTubeIcon from "@mui/icons-material/YouTube";
+import LocalGroceryStoreOutlinedIcon from "@mui/icons-material/LocalGroceryStoreOutlined";
+import GradeIcon from "@mui/icons-material/Grade";
 import Button from "@mui/joy/Button";
-import Card from "@mui/joy/Card";
-import CardCover from "@mui/joy/CardCover";
-import { styled } from "@mui/material/styles";
-import Typography from "@mui/joy/Typography";
-import ImportantDevicesIcon from "@mui/icons-material/ImportantDevices";
-import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
-import GamesOutlinedIcon from "@mui/icons-material/GamesOutlined";
-import SmartScreenOutlinedIcon from "@mui/icons-material/SmartScreenOutlined";
-import RotateRightIcon from "@mui/icons-material/RotateRight";
-
-// Styled Components
-const FullPageBackground = styled(Box)(({ imageUrl }) => ({
-  position: "fixed",
-  top: 0,
-  left: 0,
-  width: "100%",
-  height: "100%",
-  background: `url(${imageUrl}) center/cover no-repeat`,
-  opacity: 0.9,
-  zIndex: -1,
-}));
-
-const VideoCard = styled(Card)(({ theme }) => ({
-  position: "relative",
-  minWidth: 300,
-  height: "70vh",
-  overflow: "hidden",
-  backgroundColor: theme.palette.background.paper,
-}));
-
-const OverlayText = styled(Box)(({ theme }) => ({
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  color: theme.palette.common.white,
-  textAlign: "center",
-  width: "100%",
-  zIndex: 1,
-  background: "rgba(0, 0, 0, 0.6)",
-  padding: theme.spacing(3),
-  borderRadius: theme.shape.borderRadius,
-}));
-
-const VideoCard1 = styled(Card)(({ theme }) => ({
-  position: "relative",
-  minWidth: 300,
-  height: "70vh",
-  overflow: "hidden",
-  backgroundColor: "#1a1c20", // Dark, sleek background
-  boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.7)", // Subtle shadow for depth
-  border: "1px solid #e1e1e1", // Light metallic border
-  borderRadius: "10px",
-  backgroundSize: "cover",
-  backgroundPosition: "center",
-}));
-
-const OverlayText1 = styled(Box)(({ theme }) => ({
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  color: "#ffffff", // Clean white text color
-  textAlign: "center",
-  width: "90%",
-  zIndex: 1,
-  background: "rgba(0, 0, 0, 0.5)", // Semi-transparent overlay for better text contrast
-  padding: theme.spacing(3),
-  borderRadius: "8px",
-  fontSize: "1.1rem",
-  fontFamily: "'Oswald', sans-serif", // Bold and modern font for impact
-  textShadow: "0 2px 4px rgba(0, 0, 0, 0.6)",
-}));
-
-// Utility function to determine if the media is a video or image
-const isVideo = (url) => {
-  return url.match(/\.(mp4|webm|ogg)$/i);
-};
-
-// Media component to handle dynamic media rendering
-const MediaComponent = ({ url, alt, poster }) => {
-  return isVideo(url) ? (
-    <video
-      autoPlay
-      loop
-      muted
-      poster={poster}
-      style={{ width: "100%", height: "100%", objectFit: "cover" }}
-    >
-      <source src={url} type="video/mp4" />
-    </video>
-  ) : (
-    <img
-      src={url}
-      alt={alt}
-      style={{
-        width: "100%",
-        objectFit: "cover",
-        borderRadius: "8px",
-        opacity: "0.9",
-      }}
-      loading="lazy"
-    />
-  );
-};
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import { fontFamily, letterSpacing } from "@mui/system";
 
 // Main component
 export default function ShowSelectGame() {
   const [data, setData] = useState(null);
   const [username, setUsername] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const containerStyle = {
+    height: "100vh",
+    backgroundColor: "#121212", // Dark background for EA-like feel
+  };
+
+  const imageStyle = {
+    width: "100%",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)", // Increased shadow for more depth
+    borderRadius: "2px", // Rounded corners for modern look
+    transition: "transform 2s ease, box-shadow 1s ease",
+  };
+
+  const buttonStyle = {
+    border: "1px solid white",
+    fontFamily: "'Russo One', sans-serif",
+    padding: "10px",
+    letterSpacing: "2px",
+    cursor: "pointer",
+    borderRadius: "3px",
+    transition: "background-color 0.3s ease, color 0.3s ease",
+  };
 
   // Fetch game details by ID
   const getGameById = async (id) => {
@@ -122,9 +50,13 @@ export default function ShowSelectGame() {
       const res = await axios.get(
         `http://localhost:2001/admin/getGameById/${id}`
       );
-      setData(res.data[0]);
+      if (res.data && res.data.length > 0) {
+        setData(res.data[0]);
+      }
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching game data:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -132,165 +64,140 @@ export default function ShowSelectGame() {
     const gameid = localStorage.getItem("gameid");
     const name = localStorage.getItem("username");
     setUsername(name);
-    if (gameid) getGameById(gameid);
-  }, []);
+
+    if (gameid) {
+      getGameById(gameid);
+    }
+  }, []); // Empty dependency array to ensure it runs only once
 
   return (
     <>
       <Navbar name={username} />
-      {data && (
-        <Box
-          sx={{
-            minHeight: "100vh",
-            padding: 2,
-            color: "#fff",
-            position: "relative",
-          }}
-        >
-          {/* Full Page Background */}
-
-          <FullPageBackground
-            imageUrl={
-              data.gameimage
-                ? `http://localhost:2001/uploads/${data.gameimage}`
-                : "https://via.placeholder.com/800x600.png?text=No+Image"
-            }
-          />
-
-          {/* Main Video Card */}
-          <VideoCard>
-            <CardCover>
-              {data.trending && data.trending.video2Url && (
-                <MediaComponent
-                  url={
-                    data.trending && data.trending.video2Url
-                      ? `http://localhost:2001/uploads/${data.trending.video2Url}`
-                      : "https://via.placeholder.com/800x600.png?text=No+Image"
+      {loading ? (
+        <Skeleton variant="rectangular" height="70vh" />
+      ) : (
+        <>
+          <Box sx={{ flexGrow: 1 }}>
+            <AppBar position="static">
+              <Toolbar variant="dense" className="bg-dark">
+                <Typography
+                  style={{ cursor: "pointer" }}
+                  variant="h6"
+                  component="div"
+                  sx={{ flexGrow: 1 }}
+                >
+                  <img
+                    src={`http://localhost:2001/uploads/${data.trending.img_vid18}`}
+                    alt=""
+                    height={"30px"}
+                  />
+                </Typography>
+                <div className="text-center w-75 mx-5">
+                  <marquee behavior="" direction="">
+                    <GradeIcon></GradeIcon>{" "}
+                    <i>
+                      {data.gameachievements} <GradeIcon></GradeIcon>{" "}
+                      {data.gamefeatures}{" "}
+                    </i>{" "}
+                    <GradeIcon></GradeIcon>
+                  </marquee>
+                </div>
+                <div
+                  style={{
+                    padding: "8px",
+                    cursor: "pointer",
+                    transition: "background-color 0.3s ease, color 0.3s ease",
+                    fontFamily: "'Nova Mono', monospace",
+                    textDecoration: "underline",
+                    textUnderlineOffset: "5px",
+                  }}
+                  onMouseOver={(e) => (
+                    (e.currentTarget.style.color = "#ffcc00"),
+                    (e.currentTarget.style.border = "1px solid #ffcc00"),
+                    (e.currentTarget.style.textDecoration = "none")
+                  )}
+                  onMouseOut={(e) => (
+                    (e.currentTarget.style.color = "white"),
+                    (e.currentTarget.style.border = "none"),
+                    (e.currentTarget.style.textDecoration = "underline")
+                  )}
+                >
+                  Pre-Order Now *
+                </div>
+              </Toolbar>
+            </AppBar>
+          </Box>
+          <div style={containerStyle}>
+            <div className="row w-100 align-items-center">
+              <div className="col-12 col-lg-7 p-5">
+                <img
+                  style={imageStyle}
+                  src={
+                    data.trending.img_vid6
+                      ? `http://localhost:2001/uploads/${data.trending.img_vid6}`
+                      : "https://via.placeholder.com/800x600?text=No+Image+Available"
                   }
-                  alt={data.gametitle}
-                  poster={
-                    data.trending && data.trending.video4Url
-                      ? `http://localhost:2001/uploads/${data.trending.video2Url}`
-                      : "https://via.placeholder.com/800x600.png?text=No+Image"
+                  alt="Game Trending"
+                  onMouseOver={(e) =>
+                    (e.currentTarget.style.transform = "scale(1.02)")
+                  }
+                  onMouseOut={(e) =>
+                    (e.currentTarget.style.transform = "scale(1)")
                   }
                 />
-              )}
-            </CardCover>
-            <OverlayText>
-              <Typography fontWeight="bold" color="light">
-                <h2>{data.gametitle}</h2>
-              </Typography>
-              <Typography variant="body1" paragraph color="light">
-                {data.gamedescription}
-              </Typography>
-              <Button
-                variant="outlined"
-                color="warning"
-                size="lg"
-                sx={{ mt: 2 }}
-              >
-                Order Now
-              </Button>
-            </OverlayText>
-          </VideoCard>
+              </div>
+              <div className="col-12 col-lg-5 text-light p-5">
+                <h2 style={{ fontFamily: "'Russo One', sans-serif" }}>
+                  {data.gametitle}
+                </h2>
 
-          <VideoCard1 className="mt-5">
-            <CardCover>
-              {data.trending && data.trending.video3Url && (
-                <MediaComponent
-                  url={
-                    data.trending.video3Url
-                      ? `http://localhost:2001/uploads/${data.trending.video3Url}`
-                      : "https://via.placeholder.com/800x600.png?text=No+Image"
-                  }
-                  alt={data.gametitle}
-                  poster={
-                    data.trending.video4Url
-                      ? `http://localhost:2001/uploads/${data.trending.video3Url}`
-                      : "https://via.placeholder.com/800x600.png?text=No+Image"
-                  }
-                />
-              )}
-            </CardCover>
-            <OverlayText1>
-              <Typography
-                variant="h4"
-                component="h2"
-                fontWeight="bold"
-                color="light"
-              >
-                {data.gametitle}
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  flexWrap: "wrap",
-                  gap: 2,
-                  mt: 2,
-                }}
-              >
-                {data.gameplatforms.split(",").map((platform, index) => {
-                  // Define platform icons
-                  const platformIcons = {
-                    PC: ImportantDevicesIcon,
-                    "PlayStation 4": SportsEsportsIcon,
-                    "Xbox One": GamesOutlinedIcon,
-                    "Nintendo Switch": SmartScreenOutlinedIcon,
-                  };
+                <p style={{ fontFamily: "'Nova Mono', monospace" }}>
+                  {data.gamedescription}
+                </p>
 
-                  // Select the icon component or fallback
-                  const IconComponent =
-                    platformIcons[platform.trim()] || RotateRightIcon;
-
-                  return (
-                    <Box
-                      key={index}
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        backgroundColor: "rgba(0, 0, 0, 0.3)",
-                        padding: 2, // Slightly increase padding for better spacing
-                        borderRadius: 2, // Increase border radius for a smoother look
-                        gap: 1, // Add spacing between elements
-                        color: "white", // Set text color for better contrast
-                      }}
-                    >
-                      {platform}
-                      <IconComponent />
-                    </Box>
-                  );
-                })}
-              </Box>
-              <Typography
-                variant="body2"
-                color="light"
-                paragraph
-                sx={{ mt: 2 }}
-              >
-                {data.gamefeatures}
-              </Typography>
-              <Button
-                variant="outlined"
-                color="warning"
-                size="large"
-                sx={{ mt: 2 }}
-              >
-                Play Now
-              </Button>
-            </OverlayText1>
-          </VideoCard1>
-        </Box>
+                <div
+                  className="row justify-content-evenly"
+                  style={{ width: "50%" }}
+                >
+                  <div
+                    className="col text-center p-3 m-3"
+                    style={buttonStyle}
+                    onMouseOver={(e) => (
+                      (e.currentTarget.style.backgroundColor = "#ffcc00"),
+                      (e.currentTarget.style.color = "black"),
+                      (e.currentTarget.style.border = "1px solid black")
+                    )}
+                    onMouseOut={(e) => (
+                      (e.currentTarget.style.backgroundColor = "#121212"),
+                      (e.currentTarget.style.color = "white"),
+                      (e.currentTarget.style.border = "1px solid white")
+                    )}
+                  >
+                    Pre-Order{" "}
+                    <LocalGroceryStoreOutlinedIcon></LocalGroceryStoreOutlinedIcon>
+                  </div>
+                  <div
+                    className="col text-center p-3 m-3"
+                    style={buttonStyle}
+                    onMouseOver={(e) => (
+                      (e.currentTarget.style.backgroundColor = "#ffcc00"),
+                      (e.currentTarget.style.color = "black"),
+                      (e.currentTarget.style.border = "1px solid black")
+                    )}
+                    onMouseOut={(e) => (
+                      (e.currentTarget.style.backgroundColor = "#121212"),
+                      (e.currentTarget.style.color = "white"),
+                      (e.currentTarget.style.border = "1px solid white")
+                    )}
+                  >
+                    <a href={data.gametrailerurl} style={{textDecoration:"none",color:"white"}}>Watch Trailer</a> <YouTubeIcon></YouTubeIcon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </>
   );
 }
-
-
-
-
-
-
-
-
-
