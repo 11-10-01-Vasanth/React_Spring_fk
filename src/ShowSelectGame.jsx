@@ -8,13 +8,13 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/joy/Box";
-import YouTubeIcon from "@mui/icons-material/YouTube";
+import { CiYoutube } from "react-icons/ci";
 import LocalGroceryStoreOutlinedIcon from "@mui/icons-material/LocalGroceryStoreOutlined";
 import GradeIcon from "@mui/icons-material/Grade";
-import Button from "@mui/joy/Button";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import { fontFamily, letterSpacing } from "@mui/system";
+import { FaXbox } from "react-icons/fa";
+import { IoLogoPlaystation } from "react-icons/io5";
+import { RiComputerLine } from "react-icons/ri";
+import { SiNintendoswitch } from "react-icons/si";
 
 // Main component
 export default function ShowSelectGame() {
@@ -23,22 +23,23 @@ export default function ShowSelectGame() {
   const [loading, setLoading] = useState(true);
 
   const containerStyle = {
-    height: "100vh",
+    height: "300vh",
     backgroundColor: "#121212", // Dark background for EA-like feel
-  };
-
-  const imageStyle = {
-    width: "100%",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)", // Increased shadow for more depth
-    borderRadius: "2px", // Rounded corners for modern look
-    transition: "transform 2s ease, box-shadow 1s ease",
   };
 
   const buttonStyle = {
     border: "1px solid white",
     fontFamily: "'Russo One', sans-serif",
-    padding: "10px",
-    letterSpacing: "2px",
+    fontSize: "16px", // Add this line for font size
+    cursor: "pointer",
+    borderRadius: "3px",
+    transition: "background-color 0.3s ease, color 0.3s ease",
+  };
+
+  const buttonStyle1 = {
+    border: "1px solid white",
+    fontFamily: "'Russo One', sans-serif",
+    fontSize: "16px", // Add this line for font size
     cursor: "pointer",
     borderRadius: "3px",
     transition: "background-color 0.3s ease, color 0.3s ease",
@@ -89,10 +90,10 @@ export default function ShowSelectGame() {
                   <img
                     src={`http://localhost:2001/uploads/${data.trending.img_vid18}`}
                     alt=""
-                    height={"30px"}
+                    height={"25px"}
                   />
                 </Typography>
-                <div className="text-center w-75 mx-5">
+                <div className="text-center w-75 mx-5 d-lg-block d-none">
                   <marquee behavior="" direction="">
                     <GradeIcon></GradeIcon>{" "}
                     <i>
@@ -106,47 +107,79 @@ export default function ShowSelectGame() {
                   style={{
                     padding: "8px",
                     cursor: "pointer",
-                    transition: "background-color 0.3s ease, color 0.3s ease",
+                    transition:
+                      "background-color 0.3s ease, color 0.3s ease, transform 0.3s ease",
                     fontFamily: "'Nova Mono', monospace",
-                    textDecoration: "underline",
                     textUnderlineOffset: "5px",
+                    color: "white",
+                    display: "inline-block",
+                    borderRadius: "5px",
+                    border: "1px solid white",
+                    animation: "2s infinite pulse",
+                    animationName: "pulse",
                   }}
-                  onMouseOver={(e) => (
-                    (e.currentTarget.style.color = "#ffcc00"),
-                    (e.currentTarget.style.border = "1px solid #ffcc00"),
-                    (e.currentTarget.style.textDecoration = "none")
-                  )}
-                  onMouseOut={(e) => (
-                    (e.currentTarget.style.color = "white"),
-                    (e.currentTarget.style.border = "none"),
-                    (e.currentTarget.style.textDecoration = "underline")
-                  )}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.color = "#ffcc00";
+                    e.currentTarget.style.border = "1px solid #ffcc00";
+                    e.currentTarget.style.transform = "scale(1.05)";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.color = "white";
+                    e.currentTarget.style.border = "none";
+                    e.currentTarget.style.transform = "scale(1)";
+                    e.currentTarget.style.border = "1px solid white";
+                  }}
                 >
-                  Pre-Order Now *
+                  Pre-Order Now*
                 </div>
+
+                <style>
+                  {`
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.03);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+  `}
+                </style>
               </Toolbar>
             </AppBar>
           </Box>
+          <div className="d-lg-none d-block bg-dark text-light">
+            <marquee behavior="" direction="">
+              <GradeIcon></GradeIcon>{" "}
+              <i>
+                {data.gameachievements} <GradeIcon></GradeIcon>{" "}
+                {data.gamefeatures}{" "}
+              </i>{" "}
+              <GradeIcon></GradeIcon>
+            </marquee>
+          </div>
           <div style={containerStyle}>
-            <div className="row w-100 align-items-center">
-              <div className="col-12 col-lg-7 p-5">
+            <div className="row w-100" style={{ height: "auto" }}>
+              <div
+                className="col-12 col-lg-7 p-lg-4 d-flex justify-content-lg-end"
+                style={{ padding: 0 }}
+              >
                 <img
-                  style={imageStyle}
+                  style={{ width: "106%", height: "90vh" }}
+                  className="img-fluid"
                   src={
                     data.trending.img_vid6
                       ? `http://localhost:2001/uploads/${data.trending.img_vid6}`
                       : "https://via.placeholder.com/800x600?text=No+Image+Available"
                   }
                   alt="Game Trending"
-                  onMouseOver={(e) =>
-                    (e.currentTarget.style.transform = "scale(1.02)")
-                  }
-                  onMouseOut={(e) =>
-                    (e.currentTarget.style.transform = "scale(1)")
-                  }
                 />
               </div>
-              <div className="col-12 col-lg-5 text-light p-5">
+
+              <div className="col-12 col-lg-5 text-light p-5 d-flex flex-column justify-content-center">
                 <h2 style={{ fontFamily: "'Russo One', sans-serif" }}>
                   {data.gametitle}
                 </h2>
@@ -156,12 +189,12 @@ export default function ShowSelectGame() {
                 </p>
 
                 <div
-                  className="row justify-content-evenly"
-                  style={{ width: "50%" }}
+                  className="d-flex "
+                  style={{ width: "100%" }} // Adjusted width for better alignment
                 >
                   <div
-                    className="col text-center p-3 m-3"
-                    style={buttonStyle}
+                    className="text-center p-2 m-2 mt-4"
+                    style={buttonStyle1}
                     onMouseOver={(e) => (
                       (e.currentTarget.style.backgroundColor = "#ffcc00"),
                       (e.currentTarget.style.color = "black"),
@@ -174,10 +207,13 @@ export default function ShowSelectGame() {
                     )}
                   >
                     Pre-Order{" "}
-                    <LocalGroceryStoreOutlinedIcon></LocalGroceryStoreOutlinedIcon>
+                    <LocalGroceryStoreOutlinedIcon
+                      style={{ color: "orange" }}
+                    />
                   </div>
+
                   <div
-                    className="col text-center p-3 m-3"
+                    className="text-center p-3 m-2"
                     style={buttonStyle}
                     onMouseOver={(e) => (
                       (e.currentTarget.style.backgroundColor = "#ffcc00"),
@@ -190,10 +226,350 @@ export default function ShowSelectGame() {
                       (e.currentTarget.style.border = "1px solid white")
                     )}
                   >
-                    <a href={data.gametrailerurl} style={{textDecoration:"none",color:"white"}}>Watch Trailer</a> <YouTubeIcon></YouTubeIcon>
+                    <a
+                      href={data.gametrailerurl}
+                      target="blank"
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                      Watch Trailer
+                    </a>{" "}
+                    <CiYoutube style={{ color: "red", fontSize: "25px" }} />
+                  </div>
+                </div>
+                <div
+                  className="mt-3"
+                  style={{
+                    fontFamily: "'Russo One', sans-serif",
+                    letterSpacing: "1px",
+                  }}
+                >
+                  Coming{" "}
+                  {new Date(data.releasedate).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </div>
+                <div className="mt-3">
+                  <p
+                    style={{
+                      fontFamily: "'Nova Mono', monospace",
+                      display: "flex",
+                      alignItems: "center",
+                      color: "#FFF", // White text for contrast
+                      fontSize: "13px",
+                    }}
+                  >
+                    Available on &nbsp;
+                    {data.gameplatforms.split(",").map((platform, index) => {
+                      const commonStyle = {
+                        display: "inline-block",
+                        padding: "3px 7px",
+                        margin: "0 8px",
+                        borderRadius: "8px",
+                        boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+                        transition:
+                          "transform 0.3s ease, background-color 0.3s ease",
+                        cursor: "pointer",
+                      };
+
+                      switch (platform.trim()) {
+                        case "PC":
+                          return (
+                            <span
+                              key={index}
+                              style={{
+                                ...commonStyle,
+                                backgroundColor: "rgba(75, 75, 75, 0.8)", // Sleek dark gray for PC
+                              }}
+                            >
+                              <RiComputerLine
+                                style={{ fontSize: "20px", color: "#FFF" }} // Keeping white for contrast
+                                onMouseOver={(e) => {
+                                  e.currentTarget.style.transform =
+                                    "scale(1.2)";
+                                  e.currentTarget.parentElement.style.backgroundColor =
+                                    "rgba(125, 125, 125, 0.9)"; // Metallic silver on hover
+                                }}
+                                onMouseOut={(e) => {
+                                  e.currentTarget.style.transform = "scale(1)";
+                                  e.currentTarget.parentElement.style.backgroundColor =
+                                    "rgba(75, 75, 75, 0.8)";
+                                }}
+                              />
+                            </span>
+                          );
+                        case "PlayStation 4":
+                        case "PlayStation 5":
+                          return (
+                            <span
+                              key={index}
+                              style={{
+                                ...commonStyle,
+                                backgroundColor: "rgba(0, 48, 135, 0.8)", // PlayStation blue
+                              }}
+                            >
+                              <IoLogoPlaystation
+                                style={{ fontSize: "20px", color: "#FFF" }}
+                                onMouseOver={(e) => {
+                                  e.currentTarget.style.transform =
+                                    "scale(1.2)";
+                                  e.currentTarget.parentElement.style.backgroundColor =
+                                    "#0050D4"; // Darker blue on hover
+                                }}
+                                onMouseOut={(e) => {
+                                  e.currentTarget.style.transform = "scale(1)";
+                                  e.currentTarget.parentElement.style.backgroundColor =
+                                    "rgba(0, 48, 135, 0.8)";
+                                }}
+                              />
+                            </span>
+                          );
+                        case "Xbox One":
+                        case "Xbox Series X":
+                          return (
+                            <span
+                              key={index}
+                              style={{
+                                ...commonStyle,
+                                backgroundColor: "rgba(16, 124, 16, 0.8)", // Xbox green
+                              }}
+                            >
+                              <FaXbox
+                                style={{ fontSize: "20px", color: "#FFF" }}
+                                onMouseOver={(e) => {
+                                  e.currentTarget.style.transform =
+                                    "scale(1.2)";
+                                  e.currentTarget.parentElement.style.backgroundColor =
+                                    "#0D6F0D"; // Darker green on hover
+                                }}
+                                onMouseOut={(e) => {
+                                  e.currentTarget.style.transform = "scale(1)";
+                                  e.currentTarget.parentElement.style.backgroundColor =
+                                    "rgba(16, 124, 16, 0.8)";
+                                }}
+                              />
+                            </span>
+                          );
+                        case "Nintendo Switch":
+                          return (
+                            <span
+                              key={index}
+                              style={{
+                                ...commonStyle,
+                                backgroundColor: "rgba(255, 0, 0, 0.8)", // Nintendo red
+                              }}
+                            >
+                              <SiNintendoswitch
+                                style={{ fontSize: "20px", color: "#FFF" }}
+                                onMouseOver={(e) => {
+                                  e.currentTarget.style.transform =
+                                    "scale(1.2)";
+                                  e.currentTarget.parentElement.style.backgroundColor =
+                                    "#E60000"; // Darker red on hover
+                                }}
+                                onMouseOut={(e) => {
+                                  e.currentTarget.style.transform = "scale(1)";
+                                  e.currentTarget.parentElement.style.backgroundColor =
+                                    "rgba(255, 0, 0, 0.8)";
+                                }}
+                              />
+                            </span>
+                          );
+                        default:
+                          return platform;
+                      }
+                    })}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="p-5 mt-5 d-lg-block d-none">
+              <div className="row w-100">
+                <div className="col-12 col-lg-4 d-flex flex-column align-items-center">
+                  <video
+                    src={`http://localhost:2001/uploads/${data.trending.img_vid1}`}
+                    style={{ height: "80vh" }}
+                    loop
+                    autoPlay
+                    muted
+                  ></video>
+                  <div
+                    className="text-light text-center w-75 mt-5"
+                    style={{ fontFamily: "'Helvetica Neue', sans-serif" }}
+                  >
+                    <h2
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "1.5rem", // Increased font size
+                        marginBottom: "10px",
+                      }}
+                    >
+                      {data.trending.heading1}
+                    </h2>
+
+                    <p style={{ fontSize: "1rem", lineHeight: "1.5" }}>
+                      {data.trending.descp1}
+                    </p>
+                  </div>
+                </div>
+                <div className="col-12 col-lg-4 d-flex flex-column align-items-center">
+                  <video
+                    src={`http://localhost:2001/uploads/${data.trending.img_vid2}`}
+                    style={{ height: "80vh" }}
+                    loop
+                    autoPlay
+                    muted
+                  ></video>
+                  <div
+                    className="text-light text-center w-75 mt-5"
+                    style={{ fontFamily: "'Helvetica Neue', sans-serif" }}
+                  >
+                    <h2
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "1.5rem",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      {data.trending.heading2}
+                    </h2>
+                    <p style={{ fontSize: "1rem", lineHeight: "1.5" }}>
+                      {data.trending.descp2}
+                    </p>
+                  </div>
+                </div>
+                <div className="col-12 col-lg-4 d-flex flex-column align-items-center">
+                  <video
+                    src={`http://localhost:2001/uploads/${data.trending.img_vid3}`}
+                    style={{ height: "80vh" }}
+                    loop
+                    autoPlay
+                    muted
+                  ></video>
+                  <div
+                    className="text-light text-center w-75 mt-5"
+                    style={{ fontFamily: "'Helvetica Neue', sans-serif" }}
+                  >
+                    <h2
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "1.5rem",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      {data.trending.heading3}
+                    </h2>
+                    <p style={{ fontSize: "1rem", lineHeight: "1.5" }}>
+                      {data.trending.descp3}
+                    </p>
                   </div>
                 </div>
               </div>
+            </div>
+            <div className="mt-5 d-lg-none d-block">
+              <div className="row w-100">
+                <div className="col-12">
+                  <video
+                    src={`http://localhost:2001/uploads/${data.trending.img_vid1}`}
+                    style={{ width: "106%" }}
+                    loop
+                    autoPlay
+                    muted
+                  ></video>
+                  <div
+                    className="text-light text-center mt-3"
+                    style={{ fontFamily: "'Helvetica Neue', sans-serif" }}
+                  >
+                    <h2
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "1.5rem",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      {data.trending.heading1}
+                    </h2>
+                    <p style={{ fontSize: "1rem", lineHeight: "1.5" }}>
+                      {data.trending.descp1}
+                    </p>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <video
+                    src={`http://localhost:2001/uploads/${data.trending.img_vid2}`}
+                    style={{ width: "106%" }}
+                    loop
+                    autoPlay
+                    muted
+                  ></video>
+                  <div
+                    className="text-light text-center mt-3"
+                    style={{ fontFamily: "'Helvetica Neue', sans-serif" }}
+                  >
+                    <h2
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "1.5rem",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      {data.trending.heading2}
+                    </h2>
+                    <p style={{ fontSize: "1rem", lineHeight: "1.5" }}>
+                      {data.trending.descp2}
+                    </p>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <video
+                    src={`http://localhost:2001/uploads/${data.trending.img_vid3}`}
+                    style={{ width: "106%" }}
+                    loop
+                    autoPlay
+                    muted
+                  ></video>
+                  <div
+                    className="text-light text-center mt-3"
+                    style={{ fontFamily: "'Helvetica Neue', sans-serif" }}
+                  >
+                    <h2
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "1.5rem",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      {data.trending.heading3}
+                    </h2>
+                    <p style={{ fontSize: "1rem", lineHeight: "1.5" }}>
+                      {data.trending.descp3}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="text-center">
+              <span
+                style={{
+                  border: "1px solid white",
+                  color: "white",
+                  display: "inline-block",
+                  cursor: "pointer",
+                  transition: "transform 0.3s ease, background-color 0.3s ease",
+                  fontSize: "18px",
+                  fontFamily: "'Helvetica Neue', sans-serif",
+                }}
+                className="p-3 rounded-5"
+                onMouseEnter={(e) => {
+                  e.target.style.transform = "scale(1.05)";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = "scale(1)";
+                }}
+              >
+                Explore Gameplay Features
+              </span>
             </div>
           </div>
         </>

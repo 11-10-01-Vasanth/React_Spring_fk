@@ -55,6 +55,12 @@ export default function UpdateGameWithVideos() {
     video2Url: "",
     video3Url: "",
     video4Url: "",
+    heading1: "",
+    heading2: "",
+    heading3: "",
+    descp1: "",
+    descp2: "",
+    descp3: "",
     img_vid1: "",
     img_vid2: "",
     img_vid3: "",
@@ -103,6 +109,12 @@ export default function UpdateGameWithVideos() {
               gameachievements: data.gameachievements || "",
               communitylinks: data.communitylinks || "",
               gameimage: data.gameimage || "",
+              descp1: (data.trending && data.trending.descp1) || "",
+              descp2: (data.trending && data.trending.descp2) || "",
+              descp3: (data.trending && data.trending.descp3) || "",
+              heading1: (data.trending && data.trending.heading1) || "",
+              heading2: (data.trending && data.trending.heading2) || "",
+              heading3: (data.trending && data.trending.heading3) || "",
               video1Url: (data.trending && data.trending.video1Url) || "",
               video2Url: (data.trending && data.trending.video2Url) || "",
               video3Url: (data.trending && data.trending.video3Url) || "",
@@ -171,6 +183,15 @@ export default function UpdateGameWithVideos() {
     }));
   };
 
+  const contentFields = [
+    { label: 'Description 1', name: 'descp1', value: gameData.descp1, icon: <DescriptionIcon /> },
+    { label: 'Description 2', name: 'descp2', value: gameData.descp2, icon: <DescriptionIcon /> },
+    { label: 'Description 3', name: 'descp3', value: gameData.descp3, icon: <DescriptionIcon /> },
+    { label: 'Heading 1', name: 'heading1', value: gameData.heading1, icon: <TitleIcon /> },
+    { label: 'Heading 2', name: 'heading2', value: gameData.heading2, icon: <TitleIcon /> },
+    { label: 'Heading 3', name: 'heading3', value: gameData.heading3, icon: <TitleIcon /> },
+  ];
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -212,6 +233,18 @@ export default function UpdateGameWithVideos() {
     ["video1Url", "video2Url", "video3Url", "video4Url"].forEach((video) => {
       if (gameData[video]) {
         formData.append(video, gameData[video]);
+      }
+    });
+
+    ["heading1", "heading2", "heading3"].forEach((head) => {
+      if (gameData[head]) {
+        formData.append(head, gameData[head]);
+      }
+    });
+
+    ["descp1", "descp2", "descp3"].forEach((desc) => {
+      if (gameData[desc]) {
+        formData.append(desc, gameData[desc]);
       }
     });
 
@@ -695,6 +728,122 @@ export default function UpdateGameWithVideos() {
               </Grid>
             );
           })}
+
+          <Grid item xs={12}>
+            <TextField
+              label="Image/Video_Description1"
+              name="descp1"
+              value={gameData.descp1}
+              onChange={handleChange}
+              multiline
+              rows={4}
+              fullWidth
+              margin="normal"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <DescriptionIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              label="Image/Video_Description2"
+              name="descp2"
+              value={gameData.descp2}
+              onChange={handleChange}
+              multiline
+              rows={4}
+              fullWidth
+              margin="normal"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <DescriptionIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              label="Image/Video_Description3"
+              name="descp3"
+              value={gameData.descp3}
+              onChange={handleChange}
+              multiline
+              rows={4}
+              fullWidth
+              margin="normal"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <DescriptionIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              label="Image/Video_Heading1"
+              name="heading1"
+              value={gameData.heading1}
+              onChange={handleChange}
+              rows={4}
+              fullWidth
+              margin="normal"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <DescriptionIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              label="Image/Video_Heading2"
+              name="heading2"
+              value={gameData.heading2}
+              onChange={handleChange}
+              rows={4}
+              fullWidth
+              margin="normal"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <DescriptionIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              label="Image/Video_Heading3"
+              name="heading3"
+              value={gameData.heading3}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <TitleIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
 
           {[
             "Video/Img 1",
