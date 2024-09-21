@@ -183,15 +183,6 @@ export default function UpdateGameWithVideos() {
     }));
   };
 
-  const contentFields = [
-    { label: 'Description 1', name: 'descp1', value: gameData.descp1, icon: <DescriptionIcon /> },
-    { label: 'Description 2', name: 'descp2', value: gameData.descp2, icon: <DescriptionIcon /> },
-    { label: 'Description 3', name: 'descp3', value: gameData.descp3, icon: <DescriptionIcon /> },
-    { label: 'Heading 1', name: 'heading1', value: gameData.heading1, icon: <TitleIcon /> },
-    { label: 'Heading 2', name: 'heading2', value: gameData.heading2, icon: <TitleIcon /> },
-    { label: 'Heading 3', name: 'heading3', value: gameData.heading3, icon: <TitleIcon /> },
-  ];
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();

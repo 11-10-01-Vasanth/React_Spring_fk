@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import axios from "axios";
+import SelectPrgames from "./SelectPrgames";
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import Skeleton from "@mui/material/Skeleton";
@@ -23,7 +24,7 @@ export default function ShowSelectGame() {
   const [loading, setLoading] = useState(true);
 
   const containerStyle = {
-    height: "300vh",
+    height: "800vh",
     backgroundColor: "#121212", // Dark background for EA-like feel
   };
 
@@ -571,6 +572,7 @@ export default function ShowSelectGame() {
                 Explore Gameplay Features
               </span>
             </div>
+            <SelectPrgames></SelectPrgames>
           </div>
         </>
       )}

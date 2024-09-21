@@ -47,15 +47,6 @@ export default function FeaturedGamesCarousel() {
     fetchData();
   }, []);
 
-  const handlePlayPause = (index) => {
-    const video = videoRefs.current[index];
-    if (video.paused) {
-      video.play();
-    } else {
-      video.pause();
-    }
-  };
-
   if (loading) {
     return (
       <div>
@@ -115,42 +106,46 @@ export default function FeaturedGamesCarousel() {
     >
       {data.map((fg, index) => (
         <Carousel.Item key={index}>
-          <div className="video-card">
-            {/\.(mp4|webm|ogg|mov|avi|mkv|flv|wmv)$/i.test(
-              fg.trending.video1Url
-            ) ? (
-              <div className="video-container">
-                <video
-                  className="video-content"
-                  ref={(el) => (videoRefs.current[index] = el)}
-                  autoPlay
-                  loop
-                  muted
-                  controls={false}
-                >
-                  <source
-                    src={`http://localhost:2001/uploads/${fg.trending.video1Url}`}
-                    type="video/mp4"
+          {fg.trending && fg.trending.video1Url && (
+            <>
+              <div className="video-card">
+                {/\.(mp4|webm|ogg|mov|avi|mkv|flv|wmv)$/i.test(
+                  fg.trending.video1Url
+                ) ? (
+                  <div className="video-container">
+                    <video
+                      className="video-content"
+                      ref={(el) => (videoRefs.current[index] = el)}
+                      autoPlay
+                      loop
+                      muted
+                      controls={false}
+                    >
+                      <source
+                        src={`http://localhost:2001/uploads/${fg.trending.video1Url}`}
+                        type="video/mp4"
+                      />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                ) : /\.(jpg|jpeg|png|gif|svg|bmp|tiff|webp)$/i.test(
+                    fg.gameimage
+                  ) ? (
+                  <img
+                    src={`http://localhost:2001/uploads/${fg.gameimage}`}
+                    className="d-block w-100"
+                    alt={fg.gametitle}
+                    style={{
+                      height: "80vh",
+                      objectFit: "cover",
+                    }}
                   />
-                  Your browser does not support the video tag.
-                </video>
+                ) : (
+                  <p>Unsupported file type.</p>
+                )}
               </div>
-            ) : /\.(jpg|jpeg|png|gif|svg|bmp|tiff|webp)$/i.test(
-                fg.gameimage
-              ) ? (
-              <img
-                src={`http://localhost:2001/uploads/${fg.gameimage}`}
-                className="d-block w-100"
-                alt={fg.gametitle}
-                style={{
-                  height: "80vh",
-                  objectFit: "cover",
-                }}
-              />
-            ) : (
-              <p>Unsupported file type.</p>
-            )}
-          </div>
+            </>
+          )}
           <Carousel.Caption
             style={{
               bottom: "20px",
