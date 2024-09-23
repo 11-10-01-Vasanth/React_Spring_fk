@@ -91,7 +91,11 @@ export default function ShowSelectGame() {
                   <img
                     src={`http://localhost:2001/uploads/${data.trending.img_vid18}`}
                     alt=""
-                    height={"25px"}
+                    style={{
+                      width: "auto", // Adjust as needed
+                      height: "5vh",
+                      objectFit: "contain", // or "cover" based on your preference
+                    }}
                   />
                 </Typography>
                 <div className="text-center w-75 mx-5 d-lg-block d-none">
@@ -172,8 +176,8 @@ export default function ShowSelectGame() {
                   style={{ width: "106%", height: "90vh" }}
                   className="img-fluid"
                   src={
-                    data.trending.img_vid6
-                      ? `http://localhost:2001/uploads/${data.trending.img_vid6}`
+                    data.gameimage
+                      ? `http://localhost:2001/uploads/${data.gameimage}`
                       : "https://via.placeholder.com/800x600?text=No+Image+Available"
                   }
                   alt="Game Trending"
@@ -275,6 +279,8 @@ export default function ShowSelectGame() {
                       };
 
                       switch (platform.trim()) {
+                        case "Pc":
+                        case "pc":
                         case "PC":
                           return (
                             <span
@@ -327,6 +333,7 @@ export default function ShowSelectGame() {
                             </span>
                           );
                         case "Xbox One":
+                        case "Xbox":
                         case "Xbox Series X":
                           return (
                             <span
@@ -388,13 +395,25 @@ export default function ShowSelectGame() {
             <div className="p-5 mt-5 d-lg-block d-none">
               <div className="row w-100">
                 <div className="col-12 col-lg-4 d-flex flex-column align-items-center">
-                  <video
-                    src={`http://localhost:2001/uploads/${data.trending.img_vid1}`}
-                    style={{ height: "80vh" }}
-                    loop
-                    autoPlay
-                    muted
-                  ></video>
+                  {data.trending.img_vid1.endsWith(".mp4") ? (
+                    <video
+                      src={`http://localhost:2001/uploads/${data.trending.img_vid1}`}
+                      style={{ height: "80vh" }}
+                      loop
+                      autoPlay
+                      muted
+                    ></video>
+                  ) : (
+                    <img
+                      src={`http://localhost:2001/uploads/${data.trending.img_vid1}`}
+                      style={{
+                        height: "80vh",
+                        width: "100%",
+                        objectFit: "cover",
+                      }}
+                      alt={data.trending.heading1}
+                    />
+                  )}
                   <div
                     className="text-light text-center w-75 mt-5"
                     style={{ fontFamily: "'Helvetica Neue', sans-serif" }}
@@ -414,14 +433,27 @@ export default function ShowSelectGame() {
                     </p>
                   </div>
                 </div>
+
                 <div className="col-12 col-lg-4 d-flex flex-column align-items-center">
-                  <video
-                    src={`http://localhost:2001/uploads/${data.trending.img_vid2}`}
-                    style={{ height: "80vh" }}
-                    loop
-                    autoPlay
-                    muted
-                  ></video>
+                  {data.trending.img_vid2.endsWith(".mp4") ? (
+                    <video
+                      src={`http://localhost:2001/uploads/${data.trending.img_vid2}`}
+                      style={{ height: "80vh" }}
+                      loop
+                      autoPlay
+                      muted
+                    ></video>
+                  ) : (
+                    <img
+                      src={`http://localhost:2001/uploads/${data.trending.img_vid2}`}
+                      style={{
+                        height: "80vh",
+                        width: "100%",
+                        objectFit: "cover",
+                      }}
+                      alt={data.trending.heading2}
+                    />
+                  )}
                   <div
                     className="text-light text-center w-75 mt-5"
                     style={{ fontFamily: "'Helvetica Neue', sans-serif" }}
@@ -440,14 +472,27 @@ export default function ShowSelectGame() {
                     </p>
                   </div>
                 </div>
+
                 <div className="col-12 col-lg-4 d-flex flex-column align-items-center">
-                  <video
-                    src={`http://localhost:2001/uploads/${data.trending.img_vid3}`}
-                    style={{ height: "80vh" }}
-                    loop
-                    autoPlay
-                    muted
-                  ></video>
+                  {data.trending.img_vid3.endsWith(".mp4") ? (
+                    <video
+                      src={`http://localhost:2001/uploads/${data.trending.img_vid3}`}
+                      style={{ height: "80vh" }}
+                      loop
+                      autoPlay
+                      muted
+                    ></video>
+                  ) : (
+                    <img
+                      src={`http://localhost:2001/uploads/${data.trending.img_vid3}`}
+                      style={{
+                        height: "80vh",
+                        width: "100%",
+                        objectFit: "cover",
+                      }}
+                      alt={data.trending.heading3}
+                    />
+                  )}
                   <div
                     className="text-light text-center w-75 mt-5"
                     style={{ fontFamily: "'Helvetica Neue', sans-serif" }}

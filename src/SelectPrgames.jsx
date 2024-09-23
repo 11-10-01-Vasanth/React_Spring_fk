@@ -84,7 +84,11 @@ export default function SelectPrgames() {
   };
 
   const headings = data.trending
-    ? [data.trending.heading1, data.trending.heading2, data.trending.heading3].filter(Boolean)
+    ? [
+        data.trending.heading1,
+        data.trending.heading2,
+        data.trending.heading3,
+      ].filter(Boolean)
     : [];
 
   const descriptions = data.trending
@@ -109,34 +113,59 @@ export default function SelectPrgames() {
       ) : error ? (
         <p>{error}</p>
       ) : images.length > 0 ? (
-        <Carousel
-          value={images.map((image, index) => ({ image, index }))} // Combine image and index into an object
-          numVisible={3}
-          numScroll={1}
-          responsiveOptions={responsiveOptions}
-          circular
-          itemTemplate={(item) => gameTemplate(item.image, item.index)} // Use item.image and item.index
-          prevIcon={
-            <i
-              className="pi pi-angle-left"
-              style={{
-                fontSize: "2rem",
-                color: "#fff",
-                borderRadius: "50%",
-              }}
-            />
-          }
-          nextIcon={
-            <i
-              className="pi pi-angle-right"
-              style={{
-                fontSize: "2rem",
-                color: "#fff",
-                borderRadius: "50%",
-              }}
-            />
-          }
-        />
+        <>
+          <Carousel
+            value={images.map((image, index) => ({ image, index }))}
+            numVisible={3}
+            numScroll={1}
+            responsiveOptions={responsiveOptions}
+            circular
+            autoplayInterval={3000} // Interval for autoplay
+            itemTemplate={(item) => gameTemplate(item.image, item.index)}
+            prevIcon={
+              <i
+                className="pi pi-angle-left"
+                style={{
+                  fontSize: "2rem",
+                  color: "#fff",
+                  borderRadius: "50%",
+                }}
+              />
+            }
+            nextIcon={
+              <i
+                className="pi pi-angle-right"
+                style={{
+                  fontSize: "2rem",
+                  color: "#fff",
+                  borderRadius: "50%",
+                }}
+              />
+            }
+            style={{
+              overflow: "hidden", // Ensure no overflow
+              position: "relative",
+              transition: "transform 0.5s ease-in-out", // Inline transition style
+            }}
+          />
+
+          {/* Display the preview image below the carousel */}
+          {images.map((i) => (
+            <>
+              <div className="mt-3" style={{ textAlign: "center" }}>
+                <img
+                  src={`http://localhost:2001/uploads/${i}`} // Use the first image for preview
+                  alt="Preview"
+                  style={{
+                    width: "100px",
+                    height: "auto",
+                    borderRadius: "8px",
+                  }} // Adjust size and styling as needed
+                />
+              </div>
+            </>
+          ))}
+        </>
       ) : (
         <p>No game data to display.</p>
       )}
