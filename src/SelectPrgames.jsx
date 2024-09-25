@@ -95,7 +95,7 @@ export default function SelectPrgames() {
     ? [data.trending.descp1, data.trending.descp2, data.trending.descp3]
     : [];
 
-  const images = data.trending
+  const cimages = data.trending
     ? [
         data.trending.img_vid5,
         data.trending.img_vid6,
@@ -106,65 +106,153 @@ export default function SelectPrgames() {
       ].filter(Boolean)
     : []; // Filter out null values if trending data doesn't exist
 
+  const c1images = data.trending
+    ? [
+        data.trending.img_vid11,
+        data.trending.img_vid12,
+        data.trending.img_vid13,
+        data.trending.img_vid14,
+        data.trending.img_vid15,
+        data.trending.img_vid16,
+      ].filter(Boolean)
+    : []; // Filter out null values if trending data doesn't exist
+
   return (
     <div className="card mt-5" style={{ backgroundColor: "#121212" }}>
       {loading ? (
         <p>Loading game data...</p>
       ) : error ? (
         <p>{error}</p>
-      ) : images.length > 0 ? (
+      ) : cimages.length > 0 ? (
         <>
           <Carousel
-            value={images.map((image, index) => ({ image, index }))}
+            value={cimages.map((image, index) => ({ image, index }))}
             numVisible={3}
             numScroll={1}
             responsiveOptions={responsiveOptions}
             circular
             autoplayInterval={3000} // Interval for autoplay
             itemTemplate={(item) => gameTemplate(item.image, item.index)}
-            prevIcon={
-              <i
-                className="pi pi-angle-left"
-                style={{
-                  fontSize: "2rem",
-                  color: "#fff",
-                  borderRadius: "50%",
-                }}
-              />
-            }
-            nextIcon={
-              <i
-                className="pi pi-angle-right"
-                style={{
-                  fontSize: "2rem",
-                  color: "#fff",
-                  borderRadius: "50%",
-                }}
-              />
-            }
+            showIndicators={false} // Hide the pagination dots below the carousel
             style={{
               overflow: "hidden", // Ensure no overflow
               position: "relative",
               transition: "transform 0.5s ease-in-out", // Inline transition style
             }}
           />
+          <div
+            className="mb-5"
+            style={{
+              position: "relative",
+              width: "100%",
+              height: "100vh",
+              overflow: "hidden", // Ensure no overflow
+            }}
+          >
+            <video
+              src={`http://localhost:2001/uploads/${data.trending.video2Url}`}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+              loop
+              autoPlay
+              muted
+            ></video>
 
-          {/* Display the preview image below the carousel */}
-          {images.map((i) => (
-            <>
-              <div className="mt-3" style={{ textAlign: "center" }}>
-                <img
-                  src={`http://localhost:2001/uploads/${i}`} // Use the first image for preview
-                  alt="Preview"
-                  style={{
-                    width: "100px",
-                    height: "auto",
-                    borderRadius: "8px",
-                  }} // Adjust size and styling as needed
-                />
+            {/* Black transparency overlay */}
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                backgroundColor: "rgba(0, 0, 0, 0.6)", // Black with 50% transparency
+                zIndex: 1, // Ensure the overlay is on top of the video
+              }}
+            ></div>
+
+            {/* Content placed above the video and the overlay */}
+            <div
+              style={{
+                position: "relative", // This ensures content is on top of the video and overlay
+                zIndex: 2, // Ensure content is above both the video and overlay
+                color: "#fff", // Example text color
+                padding: "20px", // Add some padding for spacing
+                height: "100vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "start",
+              }}
+            >
+              <div className="ms-5">
+                <span style={{ height: "100vh" }}>
+                  <h1
+                    style={{
+                      border: "1px solid white",
+                      display: "inline",
+                      padding: "0.5rem",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    Get {data.gametitle}
+                  </h1>
+                </span>
+                <div className="mt-5 w-25">{data.gamedescription}</div>
               </div>
-            </>
-          ))}
+            </div>
+          </div>
+
+          <div className="row w-100">
+            <div className="col-12">
+              <div className="row">
+                {/* Content Section */}
+                <div className="col-6">Content</div>
+
+                {/* First Video Section */}
+                <div className="col-6">
+                  <video
+                    src={`http://localhost:2001/uploads/${data.trending.video2Url}`}
+                    style={{ height: "80vh", width: "100%" }}
+                    loop
+                    autoPlay
+                    muted
+                  ></video>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-6">
+              {/* Second Video Section */}
+              <video
+                src={`http://localhost:2001/uploads/${data.trending.video3Url}`}
+                style={{ height: "80vh", width: "100%" }}
+                loop
+                autoPlay
+                muted
+              ></video>
+            </div>
+
+            {/* Content Sections */}
+            <div className="col-6">Content</div>
+            <div className="col-6">Content</div>
+
+            <div className="col-6">
+              {/* Third Video Section */}
+              <video
+                src={`http://localhost:2001/uploads/${data.trending.video4Url}`}
+                style={{ height: "80vh", width: "100%" }}
+                loop
+                autoPlay
+                muted
+              ></video>
+            </div>
+          </div>
         </>
       ) : (
         <p>No game data to display.</p>
